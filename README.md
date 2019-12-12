@@ -16,4 +16,8 @@ For show\_program you can set path by arg2.
   Display program whose name is set by arg1.
 * compile_test \
   Compile all program and check if compiling is passed.
+* download.sh \
+  You just run this script like \
+  `gnum=your_group_number pass=your_password id=your_student_id ./download.sh` \
+  to download your group src.
 
