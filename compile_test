@@ -1,7 +1,8 @@
 #!/bin/sh
 
 cd $(dirname $0)
-cd "../5han"
+path=${1:-./src}
+cd $path
 
 # you can set file name as command line arg
 # [ $# -ge 0 ] && tfile=$1 || tfile=""
