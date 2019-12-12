@@ -19,9 +19,9 @@
 * show_program.sh \
   第一引数で指定された課題のプログラムをすべて表示するスクリプト．プログラムの中身を確認しないといけないような課題などに使ってください．
   ```bash
-  ./show_program hatten10-1
+  ./show_program.sh hatten10-1
   # with less
-  ./show_program hatten10-1 | less
+  ./show_program.sh hatten10-1 | less
   ```
 * compile_test.sh \
   すべてのcファイルをコンパイルしてコンパイルが通るかどうかを確認するだけのスクリプト．ほとんど使い道はないです．
@@ -48,9 +48,9 @@ Only for show\_program you can set path by arg2.
 * show_program.sh \
   Display program whose name is set by arg1.
   ```bash
-  ./show_program hatten10-1
+  ./show_program.sh hatten10-1
   # with less
-  ./show_program hatten10-1 | less
+  ./show_program.sh hatten10-1 | less
   ```
 * compile_test.sh \
   Compile all program and check if compiling is passed.
