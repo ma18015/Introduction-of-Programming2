@@ -21,7 +21,7 @@
   ```bash
   ./show_program.sh hatten10-1
   # with less
-  ./show_program.sh hatten10-1 | less
+  ./show_program.sh hatten10-1 | less -r
   ```
 * compile_test.sh \
   すべてのcファイルをコンパイルしてコンパイルが通るかどうかを確認するだけのスクリプト．ほとんど使い道はないです．
@@ -50,7 +50,7 @@ Only for show\_program you can set path by arg2.
   ```bash
   ./show_program.sh hatten10-1
   # with less
-  ./show_program.sh hatten10-1 | less
+  ./show_program.sh hatten10-1 | less -r
   ```
 * compile_test.sh \
   Compile all program and check if compiling is passed.
