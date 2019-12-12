@@ -5,6 +5,9 @@ cd $(dirname $0)
 path=${1:-../src}
 cd $path
 
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
 if [ $n_file = 0 ]; then
   echo "There is no file starting with $tfile"
   exit 1
