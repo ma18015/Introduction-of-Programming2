@@ -1,5 +1,6 @@
 #!/bin/sh
 
+shpath=$PWD
 cd $(dirname $0)
 path=${2:-./src}
 cd $path
@@ -25,20 +26,35 @@ if [ $n_efile -gt 0 ]; then
   rm $efile
 fi
 
+fail=()
 for cfile in $tfile*.c
 do
   echo "============================"
   filename=`basename $cfile .c`
   echo $filename
   echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    # fail("${fail[@]}" $cfile)
+    fail+=( $cfile )
+    echo -e "Compile filed." \
+            "\n============================="
+    continue
+  fi
   echo "----------------------------"
   cat $PWD/$cfile
   echo -e "============================\n"
 done
 
-n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+if [ ${#fail[@]} -gt 0 ]; then
+  echo -e "\n\n========Failed files========="
+  for failfile in ${fail[@]}; do
+    echo ${failfile}
+  done
+  echo "============================="
+fi
 
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "========compile check========" \
         "\nSrc File      : $n_file" \
         "\nExecute File  : $n_efile" \
