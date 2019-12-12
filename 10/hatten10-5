@@ -1,0 +1,82 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Implement area(fig *fig) func which cal triangle or circle area.\n" \
+        "\n  Pi is 3.14.\n" \
+        "\n  typedef enum{Circle, Triangle}ct;\n" \
+        "\n  typedef struct{" \
+        "\n    ct ct;" \
+        "\n    union{" \
+        "\n      double radius;" \
+        "\n      struct{" \
+        "\n        double teihen;" \
+        "\n        double takasa;" \
+        "\n      }tri;" \
+        "\n    }info;" \
+        "\n  }fig;\n" \
+        "\n  double area(fig *fig){ ... }\n" \
+        "\n* 0 is circle, 1 is triangle." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 0 3.5" \
+        "\n 0 0" \
+        "\n 0 -4.5" \
+        "\n 1 2.5 3.0" \
+        "\n 1 2.7 4.0" \
+        "\n 1 -4.5 2.0" \
+        "\n 1 2.5 -3.0" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 0 3.5 | $PWD/$filename
+  echo -e " expected: 38.465\n"
+  echo 0 0 | $PWD/$filename
+  echo -e " expected: (invalid radius, radius must be positive) 0\n"
+  echo 0 -4.5 | $PWD/$filename
+  echo -e " expected: (invalid radius, radius must be positive) 63.585\n"
+  echo 1 2.5 3.0 | $PWD/$filename
+  echo -e " expected: 3.75\n"
+  echo 1 2.7 4.0 | $PWD/$filename
+  echo -e " expected: 5.4\n"
+  echo 1 -4.5 2.0 | $PWD/$filename
+  echo -e " expected: (invalid base, base must be positive) -4.5\n"
+  echo 1 2.5 -3.0 | $PWD/$filename
+  echo -e " expected: (invalid height, height must be positive) -3.75\n"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

@@ -1,0 +1,66 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Counting words\n" \
+        "\n* Let spaces, periods, commas be delimiter." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\nThis is a pen." \
+        "\nIs this a pen?" \
+        "\nHow are you? --- I'm fine, thank you." \
+        "\nI think, that is 2 pen." \
+        "\ninput" \
+        "\nthirty-year-old" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo This is a pen. | $PWD/$filename
+  echo -e " expected: 4\n"
+  echo Is this a pen? | $PWD/$filename
+  echo -e " expected: 4\n"
+  echo "How are you? --- I'm fine, thank you." | $PWD/$filename
+  echo -e " expected: 8\n"
+  echo I think, that is 2 pen. | $PWD/$filename
+  echo -e " expected: (6 if number is counted) 5\n"
+  echo input | $PWD/$filename
+  echo -e " expected: 1\n"
+  echo thirty-year-old | $PWD/$filename
+  echo -e " expected: 3\n"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

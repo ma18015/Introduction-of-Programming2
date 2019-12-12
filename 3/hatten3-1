@@ -1,0 +1,67 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Check leap year or not" \
+        "\n  using only 1 if statement to check leap year." \
+        "\n  (if you check whether 1582~, you can use 2 if statement.) \n" \
+        "\n  if(year%400==0 || (year%100!=0 && year%4==0)) \n" \
+        "\n* Input is suppose to be 1582~." \
+        "\n  It doesn't have to be checked." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n2010" \
+        "\n2000" \
+        "\n1900" \
+        "\n1400 -> 1600" \
+        "\n2060" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 2010 | $PWD/$filename
+  echo -e " expected: no\n"
+  echo 2000 | $PWD/$filename
+  echo -e " expected: yes\n"
+  echo 1900 | $PWD/$filename
+  echo -e " expected: no\n"
+  echo 1400 1600 | $PWD/$filename
+  echo -e " expected: (no) yes\n"
+  echo 2060 | $PWD/$filename
+  echo -e " expected: yes\n"
+  echo -e "\n============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

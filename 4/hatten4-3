@@ -1,0 +1,67 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Matrix Power Calculator. \n" \
+        "\n* Should use 3 nested loop to power." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n a[0][0], a[0][1], a[1][0], a[1][1], power" \
+        "\n 1 2 3 4 1" \
+        "\n 1 2 3 4 3" \
+        "\n 1 2 3 4 10" \
+        "\n -3 2 4 4 2" \
+        "\n 0 0 0 0 100" \
+        "\n -1 -1 -1 -1 3" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 1 2 3 4 1 | $PWD/$filename
+  echo -e "expected 1 2 3 4\n"
+  echo 1 2 3 4 3 | $PWD/$filename
+  echo -e "expected 37 54 81 118\n"
+  echo 1 2 3 4 10 | $PWD/$filename
+  echo -e "expected 4783807 6972050 10458075 15241882\n"
+  echo -3 2 4 4 2 | $PWD/$filename
+  echo -e "expected 17 2 4 24\n"
+  echo 0 0 0 0 100 | $PWD/$filename
+  echo -e "expected 0 0 0 0\n"
+  echo -1 -1 -1 -1 3 | $PWD/$filename
+  echo -e "expected -4 -4 -4 -4"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

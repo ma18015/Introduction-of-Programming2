@@ -1,0 +1,66 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Check palindrome without non alphabet.\n" \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\nSo many dynamos!" \
+        "\nCivic?" \
+        "\nDon't n3od." \
+        "\nEva, can I see bees in a cave?" \
+        "\nThis is a pen." \
+        "\nthirty-year-old" \
+        "\n============================="
+
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo So many dynamos! | $PWD/$filename
+  echo -e " expected: yes\n"
+  echo Civic? | $PWD/$filename
+  echo -e " expected: yes\n"
+  echo "Don't n3od." | $PWD/$filename
+  echo -e " expected: yes\n"
+  echo "Eva, can I see bees in a cave?" | $PWD/$filename
+  echo -e " expected: yes\n"
+  echo This is a pen. | $PWD/$filename
+  echo -e " expected: no\n"
+  echo thirty-year-old | $PWD/$filename
+  echo -e " expected: no\n"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

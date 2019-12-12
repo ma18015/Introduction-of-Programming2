@@ -1,0 +1,76 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Add 2 complex numbers.\n" \
+        "\n  complex sum(complex c1, complex c2){ ... }\n" \
+        "\n* Used structure is supposed to be\n" \
+        "\n    typedef struct{" \
+        "\n       int re;" \
+        "\n       int im;" \
+        "\n    } complex\n" \
+        "\n* If imaginary part is 0, 0i shouldn't be displayed." \
+        "\n  Like x: 3+0i  ->  o: 3" \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 2 3 4 5" \
+        "\n 1 0 1 0" \
+        "\n 0 1 0 1" \
+        "\n 90 4 80 -4" \
+        "\n 4 9 -4 8" \
+        "\n 9 -4 -9 4" \
+        "\n -9 -4 -9 -4" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 2 3 4 5 | $PWD/$filename
+  echo -e " expected: 6+8i\n"
+  echo 1 0 1 0 | $PWD/$filename
+  echo -e " expected: 2\n"
+  echo 0 1 0 1 | $PWD/$filename
+  echo -e " expected: 2i\n"
+  echo 90 4 80 -4 | $PWD/$filename
+  echo -e " expected: 170\n"
+  echo 4 9 -4 8 | $PWD/$filename
+  echo -e " expected: 17i\n"
+  echo 9 -4 -9 4 | $PWD/$filename
+  echo -e " expected: 0\n"
+  echo -9 -4 -9 -4 | $PWD/$filename
+  echo -e " expected: -18-8i\n"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_efile" \
+        "\nExecute File  : $n_file" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

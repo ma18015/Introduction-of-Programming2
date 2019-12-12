@@ -1,0 +1,67 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Implement showMonth func that convert birth month" \
+        "\n  in number to in English and print it in English" \
+        "\n  using enumeration month.\n" \
+        "\n  typedef enum{Jan=1, Feb, Mar, Apr, May," \
+        "\n     Jun, Jul, Aug, Sep, Oct, Nov, Dec}month;\n" \
+        "\n  void showMonth(month m){ ... }\n" \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 7" \
+        "\n 3" \
+        "\n 11" \
+        "\n 0 1" \
+        "\n 13 2" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 7 | $PWD/$filename
+  echo -e " expected: July\n"
+  echo 3 | $PWD/$filename
+  echo -e " expected: March\n"
+  echo 11 | $PWD/$filename
+  echo -e " expected: November\n"
+  echo 0 1 | $PWD/$filename
+  echo -e " expected: (invalid input 0) Jan\n"
+  echo 13 2 | $PWD/$filename
+  echo -e " expected: (invalid input 13) Feb\n"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

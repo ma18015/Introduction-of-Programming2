@@ -1,0 +1,67 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Convert decimal to binary.\n" \
+        "\n* Input is supposed to be 1 ~ 65535.\n" \
+        "\n* Top output's top digit have to be 1." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n10" \
+        "\n10000" \
+        "\n70000 65535" \
+        "\n19" \
+        "\n0 1" \
+        "\n2" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 10 | $PWD/$filename
+  echo -e "expected 1010\n"
+  echo 10000 | $PWD/$filename
+  echo -e "expected 10011100010000\n"
+  echo 70000 65535 | $PWD/$filename
+  echo -e "expected (10001000101110000) 1111111111111111\n"
+  echo 19 | $PWD/$filename
+  echo -e "expected 10011\n"
+  echo 0 1 | $PWD/$filename
+  echo -e "expected (0) 1\n"
+  echo 2 | $PWD/$filename
+  echo -e "expected 10"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

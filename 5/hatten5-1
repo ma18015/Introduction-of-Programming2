@@ -1,0 +1,64 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Fibonacci function. like\n" \
+        "\n  int fibonacci(int n) {...}\n" \
+        "\n* Input has to be 0 ~ n integer." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n10" \
+        "\n0" \
+        "\n2" \
+        "\n-1 1" \
+        "\n19" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 10 | $PWD/$filename
+  echo -e "expected 55      (89)\n"
+  echo 0 | $PWD/$filename
+  echo -e "expected 1 \n"
+  echo 2 | $PWD/$filename
+  echo -e "expected 2 \n"
+  echo -1 1 | $PWD/$filename
+  echo -e "expected (invalid) 1\n"
+  echo 19 | $PWD/$filename
+  echo -e "expected 4181    (6765)"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

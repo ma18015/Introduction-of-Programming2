@@ -1,0 +1,65 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Implement a func that counts spaces from given chars(char * type).\n" \
+        "\n  int countSpaces(char *str){ ... }\n" \
+        "\n* Input char by using gets func in main func." \
+        "\n  and passing input to countSpaces and countSpaces returns # spaces." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n\"I am a student.\"" \
+        "\n\"thirty-year-old\"" \
+        "\n\"    haha\"" \
+        "\n\"Hello   there.\"" \
+        "\n\"Hello         \"" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo "I am a student." | $PWD/$filename
+  echo -e " expected: 3\n"
+  echo "thirty-year-old" | $PWD/$filename
+  echo -e " expected: 0\n"
+  echo "    haha" | $PWD/$filename
+  echo -e " expected: 4\n"
+  echo "Hello   there." | $PWD/$filename
+  echo -e " expected: 3\n"
+  echo "Hello         " | $PWD/$filename
+  echo -e " expected: 9\n"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

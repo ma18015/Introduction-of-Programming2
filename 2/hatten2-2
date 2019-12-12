@@ -1,0 +1,72 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Check if input number is prime." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n1" \
+        "\n2" \
+        "\n3" \
+        "\n0 9" \
+        "\n9" \
+        "\n8" \
+        "\n19" \
+        "\n-2 19" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 1 | $PWD/$filename
+  echo -e "expected no\n"
+  echo 2 | $PWD/$filename
+  echo -e "expected yes\n"
+  echo 3 | $PWD/$filename
+  echo -e "expected yes\n"
+  echo 0 9 | $PWD/$filename
+  echo -e "expected (0 is invalid) no\n"
+  echo 9 | $PWD/$filename
+  echo -e "expected no\n"
+  echo 8 | $PWD/$filename
+  echo -e "expected no\n"
+  echo 19 | $PWD/$filename
+  echo -e "expected yes\n"
+  echo -2 19 | $PWD/$filename
+  echo -e "expected (minus is invalid) yes\n"
+  echo -e "\n============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="
+

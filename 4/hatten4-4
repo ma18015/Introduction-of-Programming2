@@ -1,0 +1,61 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Solve simultaneous linear equations\n" \
+        "\n   a_00*x_0 + a_01*x_1 = b_0" \
+        "\n   a_10*x_0 + a_11*x_1 = b_1 \n" \
+        "\n* Assume rank is 2. \n" \
+        "\n* Have to make type double." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\na_00, a_01, a_10, a_11, b_0, b_1" \
+        "\n1 2 3 4 5 6" \
+        "\n1 1 1 -1 10 4" \
+        "\n1.5 1 6 -1 5 4" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 1 2 3 4 5 6 | $PWD/$filename
+  echo -e "expected -4 4.5\n"
+  echo 1 1 1 -1 10 4 | $PWD/$filename
+  echo -e "expected 7 3\n"
+  echo 1.5 1 6 -1 5 4 | $PWD/$filename
+  echo -e "expected about 1.2 3.2"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

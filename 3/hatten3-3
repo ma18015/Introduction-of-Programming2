@@ -1,0 +1,62 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Print decimal number up to 50 digits." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n3 61" \
+        "\n500 16" \
+        "\n1 3" \
+        "\n0 3" \
+        "\n52138 9999" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 3 61 | $PWD/$filename
+  echo -e "expected 0.04918032786885245901639344262295081967213114754098\n"
+  echo 500 16 | $PWD/$filename
+  echo -e "expected 31.25\n"
+  echo 1 3 | $PWD/$filename
+  echo -e "expected 0.33333333333333333333333333333333333333333333333333\n"
+  echo 0 3 | $PWD/$filename
+  echo -e "expected 0.0"
+  echo 52138 9999 | $PWD/$filename
+  echo -e "expected 5.21432143214321432143214321432143214321432143214321"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

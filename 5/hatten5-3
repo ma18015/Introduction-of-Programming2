@@ -1,0 +1,48 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+echo -e "\n=============================" \
+        "\n* lcm function. like\n" \
+        "\n  int lcm(int n, int m) {...}\n" \
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 12 18 | $PWD/$filename
+  echo -e "expected lcm: 36\n"
+  echo 3 2 | $PWD/$filename
+  echo -e "expected lcm: 6\n"
+  echo 8 19 | $PWD/$filename
+  echo -e "expected lcm: 152\n"
+  echo 9 9 | $PWD/$filename
+  echo -e "expected lcm: 9\n"
+  echo 10 45 | $PWD/$filename
+  echo -e "expected lcm: 90\n"
+  echo 0 10 45 | $PWD/$filename
+  echo -e "expected lcm: (0 is invalid) 90\n"
+  echo 5 -2 45 | $PWD/$filename
+  echo -e "expected lcm: (minus is invalid) 45"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_efile" \
+        "\nExecute File  : $n_file" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

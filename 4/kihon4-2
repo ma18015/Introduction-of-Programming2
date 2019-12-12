@@ -1,0 +1,41 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+echo -e "\n=============================" \
+        "\n* Have to use array to store scores"
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 10 80 38 60 90 | $PWD/$filename
+  echo -e "expected\nOver  60 : 80 60 90\nUnder 60 : 10 38\n"
+  echo 10 0 5 3 9 | $PWD/$filename
+  echo -e "expected\nOver  60 : \nunder 60 : 10 0 5 3 9\n"
+  echo 200 90 85 83 89 90 | $PWD/$filename
+  echo -e "expected\nOver  60 : (200) 90 85 83 89 90\nUnder 60 :\n"
+  echo 60 59 61 0 0 | $PWD/$filename
+  echo -e "expected\nOver  60 : 60 61\nUnder 60 : 59 0 0"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_efile" \
+        "\nExecute File  : $n_file" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

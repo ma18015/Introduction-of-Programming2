@@ -1,0 +1,60 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Inplement a func that sorts given int array.\n" \
+        "\n  void sort(int *array, int size){ ... }\n" \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 10 50 38 80 60" \
+        "\n 0 0 0 0 0" \
+        "\n -1 -90 0 0 3" \
+        "\n -10 -2 -100 -20 -4" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo "10 50 38 80 60" | $PWD/$filename
+  echo -e " expected: 10 38 50 60 80\n"
+  echo "0 0 0 0 0" | $PWD/$filename
+  echo -e " expected: 0 0 0 0 0\n"
+  echo "-1 -90 0 0 3" | $PWD/$filename
+  echo -e " expected: -90 -1  0 0 3\n"
+  echo "-10 -2 -100 -20 -4" | $PWD/$filename
+  echo -e " expected: -100 -20 -10 -4 -2\n"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

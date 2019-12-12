@@ -1,0 +1,86 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Print list of exam candidates name, each subject score and total score.\n" \
+        "\n* Input is supposed to be" \
+        "\n  # of people you enter: 2" \
+        "\n  Name    : Taro" \
+        "\n  Math    : 90" \
+        "\n  English : 100" \
+        "\n  Name    : Jiro" \
+        "\n  Math    : 0" \
+        "\n  English : 50\n" \
+        "\n* List is like" \
+        "\n  Name   Math    English   Total" \
+        "\n  Taro     90        100     190" \
+        "\n  Jiro      0         50      50" \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 2 Taro 90 100 Jiro 0 50" \
+        "\n 10 Taro 90 100 Jiro 0 50 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100" \
+        "\n 2 Taro 90 100" \
+        "\n 2 Taro 90 100 Jiro 0 50" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 2 Taro 90 100 Jiro 0 50 | $PWD/$filename
+  echo -e " expected: " \
+          "\n  Name   Math    English   Total" \
+          "\n  Taro     90        100     190" \
+          "\n  Jiro      0         50      50"
+  echo 10 Taro 90 100 Jiro 0 50 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 | $PWD/$filename
+  echo -e " expected: " \
+          "\n  Name   Math    English   Total" \
+          "\n  Taro     90        100     190" \
+          "\n  Jiro      0         50      50" \
+          "\n  Taro     90        100     190" \
+          "\n  Taro     90        100     190" \
+          "\n  Taro     90        100     190" \
+          "\n  Taro     90        100     190" \
+          "\n  Taro     90        100     190" \
+          "\n  Taro     90        100     190" \
+          "\n  Taro     90        100     190" \
+          "\n  Taro     90        100     190"
+  echo 2 Taro -90 100 Jiro 0 -50 | $PWD/$filename
+  echo -e " expected: " \
+          "\n  Name   Math    English   Total" \
+          "\n  Taro    -90        100      10" \
+          "\n  Jiro      0        -50     -50"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

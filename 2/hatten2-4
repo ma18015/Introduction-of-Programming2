@@ -1,0 +1,38 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================"
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 1 2 1 3 | $PWD/$filename
+  echo -e "expected 1/2 + 1/3 = 5/6\n"
+  echo 1 2 5 6 | $PWD/$filename
+  echo -e "expected 1/2 + 5/6 = 4/3\n"
+  echo 19 20 41 20 | $PWD/$filename
+  echo -e "expected 19/20 + 41/20 = 3\n"
+  echo 2 3 3 2 | $PWD/$filename
+  echo -e "expected 2/3 + 3/2 = 13/6"
+  echo "----------------------------"
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc file      : $n_efile" \
+        "\nExecute File  : $n_file" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

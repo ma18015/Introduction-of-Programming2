@@ -1,0 +1,59 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Implement a func that copy array1 to array2.\n" \
+        "\n  void copyArray(int *from, int *to, int size){ ... }\n" \
+        "\n* Passing first element pointer of array to the func" \
+        "\n  and return the result as double type." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 5 3 7 " \
+        "\n 10 90 100" \
+        "\n -1 -4 12" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 5 3 7 | $PWD/$filename
+  echo -e " expected: 5 3 7\n"
+  echo 10 90 100 | $PWD/$filename
+  echo -e " expected: 10 90 100\n"
+  echo -1 -4 12 | $PWD/$filename
+  echo -e " expected: -1 -4 12\n"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

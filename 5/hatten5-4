@@ -1,0 +1,52 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+echo -e "\n=============================" \
+        "\n* isPrime function. like\n" \
+        "\n  int isPrime(int n) {...}\n" \
+        "\n* Input suppose to be natural number(input>0)." \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 1 | $PWD/$filename
+  echo -e "expected no\n"
+  echo 2 | $PWD/$filename
+  echo -e "expected yes\n"
+  echo 3 | $PWD/$filename
+  echo -e "expected yes\n"
+  echo 0 9 | $PWD/$filename
+  echo -e "expected (0 is invalid) no\n"
+  echo 9 | $PWD/$filename
+  echo -e "expected no\n"
+  echo 8 | $PWD/$filename
+  echo -e "expected no\n"
+  echo 19 | $PWD/$filename
+  echo -e "expected yes\n"
+  echo -2 19 | $PWD/$filename
+  echo -e "expected (minus is invalid) yes"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_efile" \
+        "\nExecute File  : $n_file" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

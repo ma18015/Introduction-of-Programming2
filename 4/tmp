@@ -1,0 +1,42 @@
+#!/bin/sh
+
+cd $(dirname $0)
+. ../assert.sh/assert.sh
+cd ../../5han/
+
+tfile=kihon4-1
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  assert "echo 10 80 38 60 90 | $PWD/$filename" "80点以上の人は2人です。"     
+  # => 2
+  assert "echo 10 0 5 3 9 | $PWD/$filename" "80点以上の人は0人です。"         
+  # => 0
+  assert "echo 200 90 85 83 89 90 | $PWD/$filename" "80点以上の人は5人です。"
+  # => 5
+  assert "echo 80 79 81 0 0 | $PWD/$filename" "80点以上の人は2人です。"
+  # => 2
+  echo -e "\n============================="
+done
+
+assert_end examples
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_efile" \
+        "\nExecute File  : $n_file" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

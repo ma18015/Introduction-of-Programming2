@@ -1,0 +1,48 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+echo -e "\n=============================" \
+        "\n* triangleArea function. like\n" \
+        "\n  double triangleArea(double base, double height) {...}\n" \
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 3.5 4.5 | $PWD/$filename
+  echo -e "expected 7.875\n"
+  echo 0 3.5 4.5 | $PWD/$filename
+  echo -e "expected 0 (7.875)\n"
+  echo 3.5 0 4.5 | $PWD/$filename
+  echo -e "expected 0 (7.875)\n"
+  echo -3.5 4.5 | $PWD/$filename
+  echo -e "expected (-7.875) minus is invalid\n"
+  echo 3.5 -4.5 | $PWD/$filename
+  echo -e "expected (-7.875) minus is invalid\n"
+  echo 10 9.3 | $PWD/$filename
+  echo -e "expected 46.5\n"
+  echo 2 3 | $PWD/$filename
+  echo -e "expected 0.33333..."
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_efile" \
+        "\nExecute File  : $n_file" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

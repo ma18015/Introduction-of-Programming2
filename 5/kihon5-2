@@ -1,0 +1,48 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+echo -e "\n=============================" \
+        "\n* bmi function to calculate bmi. like\n" \
+        "\n  double bmi(double height, double weight) {...}\n" \
+        "\n* Unit is (m) not (cm).\n" \
+        "\n* But input unit is (cm)." \
+        "\n=============================" \
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 176 70 | $PWD/$filename
+  echo -e "expected 22.598140\n"
+  echo 0 5 9 | $PWD/$filename
+  echo -e "expected (devided by 0)\n" \
+          "         3599.999999999999\n"
+  echo -1 90 1 | $PWD/$filename
+  echo -e "expected (900000 used height is minus)\n" \
+          "         1.2345679012345678\n"
+  echo 100 -1 80 | $PWD/$filename
+  echo -e "expected (-1)\n" \
+          "         80"
+  echo -e "============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_efile" \
+        "\nExecute File  : $n_file" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

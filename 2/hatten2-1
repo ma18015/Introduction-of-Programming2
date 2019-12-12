@@ -1,0 +1,66 @@
+#!/bin/sh
+
+cd $(dirname $0)
+cd ../../5han/
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2>/dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* cal and display lcm." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 3 2" \
+        "\n 8 19" \
+        "\n 9 9" \
+        "\n 10 45" \
+        "\n 0 10 45" \
+        "\n 5 -2 45" \
+        "\n============================="
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  echo 3 2 | $PWD/$filename
+  echo -e "gcd 1, lcm 6\n"
+  echo 8 19 | $PWD/$filename
+  echo -e "gcd 1, lcm 152\n"
+  echo 9 9 | $PWD/$filename
+  echo -e "gcd 9, lcm 9\n"
+  echo 10 45 | $PWD/$filename
+  echo -e "gcd 5, lcm 90\n"
+  echo 0 10 45 | $PWD/$filename
+  echo -e "gcd 5, lcm 90\n"
+  echo 5 -2 45 | $PWD/$filename
+  echo -e "gcd 5, lcm 45\n"
+  echo -e "\n============================="
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="
+
