@@ -1,4 +1,4 @@
-# Test Program for Introduction of Programming 2.
+# Test Script for Introduction of Programming 2.
 
 I didn't make some test script. \
 This script is not used assert or that kind of thing. \
