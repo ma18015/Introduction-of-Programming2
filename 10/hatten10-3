@@ -67,7 +67,7 @@ do
   echo 100 thirty-year-old | $PWD/$filename
   echo -e " expected: 3\n"
   echo 8 "This is a pen." | $PWD/$filename
-  echo -e " expected: 2\n"
+  echo -e " expected: 2(This is )\n"
   echo -e "============================="
 done
 
