@@ -25,6 +25,7 @@ fi
 
 echo -e "\n=============================" \
         "\n* Print list of exam candidates name, each subject score and total score.\n" \
+        "\n* Have to use calloc.\n" \
         "\n* Input is supposed to be" \
         "\n  # of people you enter: 2" \
         "\n  Name    : Taro" \
