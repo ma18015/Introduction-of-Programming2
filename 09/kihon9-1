@@ -39,10 +39,25 @@ echo -e "\n=============================" \
         "\n============================="
 
 echo -e "\n==========Test case==========" \
-        "\n 10001 Taro 90 10002 Jiro 70 10003 Saburo 60 10002" \
-        "\n 10 Ao 90 20 Shiro 70 30 Kiiro 60 20" \
-        "\n 10 Taro 90 70 Jiro 70 30 Saburo 60 100" \
-        "\n 10001 Taro 900 10002 Jiro 7000 10003 Saburo 360 10003" \
+        "\n 10001 Taro 90"\
+        "\n 10002 Jiro 70"\
+        "\n 10003 Saburo 60"\
+        "\n 10002"\
+        "\n ----------------------"
+        "\n 10 Ao 90"\
+        "\n 20 Shiro 70"\
+        "\n 30 Kiiro 60"\
+        "\n 20"\
+        "\n ----------------------"
+        "\n 10 Taro 90"\
+        "\n 70 Jiro 70"\
+        "\n 30 Saburo 60"\
+        "\n 100"\
+        "\n ----------------------"
+        "\n 10001 Taro 900"\
+        "\n 10002 Jiro 7000"\
+        "\n 10003 Saburo 360"\
+        "\n 10003"\
         "\n============================="
 
 fail=()
@@ -59,13 +74,21 @@ do
             "\n============================="
     continue
   fi
-  echo 10001 Taro 90 10002 Jiro 70 10003 Saburo 60 10002 | $PWD/$filename
+  echo -e "10001\nTaro\n90\n"\
+          "10002\nJiro\n70\n"\
+          "10003\nSaburo\n60\n10002\n" | $PWD/$filename
   echo -e " expected: StudentID 10002, Name Jiro, English 70.\n"
-  echo 10 Ao 90 20 Shiro 70 30 Kiiro 60 20 | $PWD/$filename
+  echo -e "10\nAo\n90\n"\
+          "20\nShiro\n70\n"\
+          "30\nKiiro\n60\n20\n" | $PWD/$filename
   echo -e " expected: StudentID 20, Name Shiro, English 70.\n"
-  echo 10 Taro 90 Jiro 70 30 Saburo 60 100 | $PWD/$filename
+  echo -e "10\nTaro\n90\n"\
+          "70\nJiro\n70\n"\
+          "30\nSaburo\n60\n100\n" | $PWD/$filename
   echo -e " expected: invalid student id.\n"
-  echo 10001 Taro 900 10002 Jiro 7000 10003 Saburo 360 10003 | $PWD/$filename
+  echo -e "10001\nTaro\n900\n"\
+          "10002\nJiro\n7000\n"\
+          "10003\nSaburo\n360\n10003\n" | $PWD/$filename
   echo -e " expected: StudentID 10003, Name Saburo, English 360.\n"
   echo -e "============================="
 done

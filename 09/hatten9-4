@@ -26,10 +26,10 @@ fi
 echo -e "\n=============================" \
         "\n* Print students who are over criterion using structure.\n" \
         "\n* Student names include no spaces and" \
-        "\n  inputs are supposed to be\n" \
-        "\n    char Student name " \
-        "\n    int  Height(cm)" \
-        "\n    int  criterion" \
+        "\n  inputs are supposed to be:" \
+        "\n      char Student name " \
+        "\n      int  Height(cm)" \
+        "\n      int  criterion\n" \
         "\n* Structure is supposed to be\n" \
         "\n    typedef struct{" \
         "\n       char name[20];" \
@@ -57,12 +57,12 @@ do
             "\n============================="
     continue
   fi
-  echo Taro 176 Jiro 165 Saburo 168 167 | $PWD/$filename
+  echo -e "Taro\n176\nJiro\n165\nSaburo\n168\n167\n" | $PWD/$filename
   echo -e " expected: Taro, Saburo.\n"
-  echo Taro 176 Jiro 165 Saburo 168 16 | $PWD/$filename
+  echo -e "Taro\n176\nJiro\n165\nSaburo\n168\n16\n" | $PWD/$filename
   echo -e " expected: Taro, Jiro, Saburo.\n"
-  echo Taro 176 Jiro 165 Saburo 168 180 | $PWD/$filename
-  echo -e " expected: None is taller than criterion.\n"
+  echo -e "Taro\n176\nJiro\n165\nSaburo\n168\n180\n" | $PWD/$filename
+  echo -e " expected: No one is taller than criterion.\n"
   echo -e "============================="
 done
 
