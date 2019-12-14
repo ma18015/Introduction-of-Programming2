@@ -51,11 +51,11 @@ do
             "\n============================="
     continue
   fi
-  echo 0 | $PWD/$filename
+  echo -e "0\n" | $PWD/$filename
   echo -e " expected: undergrad student\n"
-  echo 1 | $PWD/$filename
+  echo -e "1\n" | $PWD/$filename
   echo -e " expected: grad student\n"
-  echo 2 0 | $PWD/$filename
+  echo -e "2\n0\n" | $PWD/$filename
   echo -e " expected: (invalid input) undergrad\n"
   echo -e "============================="
 done

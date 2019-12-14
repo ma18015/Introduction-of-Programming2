@@ -61,9 +61,9 @@ do
   echo -e " expected: March\n"
   echo 11 | $PWD/$filename
   echo -e " expected: November\n"
-  echo 0 1 | $PWD/$filename
+  echo -e "0\n1\n" | $PWD/$filename
   echo -e " expected: (invalid input 0) Jan\n"
-  echo 13 2 | $PWD/$filename
+  echo -e "13\n2\n" | $PWD/$filename
   echo -e " expected: (invalid input 13) Feb\n"
   echo -e "============================="
 done

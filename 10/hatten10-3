@@ -54,19 +54,19 @@ do
             "\n============================="
     continue
   fi
-  echo 100 This is a pen. | $PWD/$filename
+  echo -e "100\nThis is a pen.\n" | $PWD/$filename
   echo -e " expected: 4\n"
-  echo 100 Is this a pen? | $PWD/$filename
+  echo -e "100\nIs this a pen?\n" | $PWD/$filename
   echo -e " expected: 4\n"
-  echo 100 "How are you? --- I'm fine, thank you." | $PWD/$filename
+  echo -e "100\nHow are you? --- I'm fine, thank you.\n" | $PWD/$filename
   echo -e " expected: 8\n"
-  echo 100 I think, that is 2 pen. | $PWD/$filename
+  echo -e "100\nI think, that is 2 pen.\n" | $PWD/$filename
   echo -e " expected: (6 if number is counted) 5\n"
-  echo 100 input | $PWD/$filename
+  echo -e "100\ninput\n" | $PWD/$filename
   echo -e " expected: 1\n"
-  echo 100 thirty-year-old | $PWD/$filename
+  echo -e "100\nthirty-year-old\n" | $PWD/$filename
   echo -e " expected: 3\n"
-  echo 8 "This is a pen." | $PWD/$filename
+  echo -e "8\nThis is a pen.\n" | $PWD/$filename
   echo -e " expected: 2(This is )\n"
   echo -e "============================="
 done

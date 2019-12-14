@@ -26,7 +26,8 @@ fi
 echo -e "\n=============================" \
         "\n* Print reversed input (alphabet only).\n" \
         "\n* Max # of characters are specified by user input.\n" \
-        "\n* Allocates a block of memory for char input using calloc." \
+        "\n* Allocates a block of memory for char input using calloc. \n" \
+        "\n* If input char length is more than max, program's behavior is up to students." \
         "\n============================="
 
 echo -e "\n==========Test case==========" \
@@ -51,12 +52,13 @@ do
             "\n============================="
     continue
   fi
-  echo 10 abcde | $PWD/$filename
+  echo -e "10\nabcde\n" | $PWD/$filename
   echo -e " expected: edcba\n"
-  echo 1000 input | $PWD/$filename
+  echo -e "1000\ninput\n" | $PWD/$filename
   echo -e " expected: tupni\n"
-  echo 2 asdfg | $PWD/$filename
-  echo -e " expected: sa\n"
+  echo -e "2\nasdfg\n" | $PWD/$filename
+  echo -e " expected: sa" \
+          "\n(If this output is wrong, it's ok due to max char len.)\n"
   echo -e "============================="
 done
 

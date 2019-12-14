@@ -40,11 +40,28 @@ echo -e "\n=============================" \
         "\n  Jiro      0         50      50" \
         "\n============================="
 
-echo -e "\n==========Test case==========" \
-        "\n 2 Taro 90 100 Jiro 0 50" \
-        "\n 10 Taro 90 100 Jiro 0 50 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100" \
-        "\n 2 Taro 90 100" \
-        "\n 2 Taro 90 100 Jiro 0 50" \
+echo -e "\n==========Test case=========="\
+        "\n 2"\
+        "\n Taro 90 100"\
+        "\n Jiro 0 50"\
+        "\n ------------------------"\
+        "\n 10"\
+        "\n Taro 90 100 "\
+        "\n Jiro 0 50"\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100 "\
+        "\n Taro 90 100"\
+        "\n ------------------------"\
+        "\n 2"\
+        "\n Taro 90 100"\
+        "\n Jiro 0 50"\
         "\n============================="
 
 fail=()
@@ -62,12 +79,26 @@ do
             "\n============================="
     continue
   fi
-  echo 2 Taro 90 100 Jiro 0 50 | $PWD/$filename
+  echo -e "2\n"\
+          "Taro\n90\n100\n"\
+          "Jiro\n0\n50\n" | $PWD/$filename
   echo -e " expected: " \
           "\n  Name   Math    English   Total" \
           "\n  Taro     90        100     190" \
-          "\n  Jiro      0         50      50"
-  echo 10 Taro 90 100 Jiro 0 50 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 Taro 90 100 | $PWD/$filename
+          "\n  Jiro      0         50      50\n"
+  echo -e "10\n"\
+          "Taro\n90\n100\n"\
+          "Jiro\n0\n50\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n"\
+          "Taro\n90\n100\n" | $PWD/$filename
   echo -e " expected: " \
           "\n  Name   Math    English   Total" \
           "\n  Taro     90        100     190" \
@@ -79,8 +110,10 @@ do
           "\n  Taro     90        100     190" \
           "\n  Taro     90        100     190" \
           "\n  Taro     90        100     190" \
-          "\n  Taro     90        100     190"
-  echo 2 Taro -90 100 Jiro 0 -50 | $PWD/$filename
+          "\n  Taro     90        100     190\n"
+  echo -e "2\n"\
+          "Taro\n-90\n100\n"\
+          "Jiro\n0\n-50\n" | $PWD/$filename
   echo -e " expected: " \
           "\n  Name   Math    English   Total" \
           "\n  Taro    -90        100      10" \
