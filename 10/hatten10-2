@@ -40,7 +40,7 @@ echo -e "\n==========Test case=========="\
         "\n Taro 90 100 "\
         "\n Taro 90 100 "\
         "\n Taro 90 100 "\
-        "\n Taro 90 100 "\
+        "\n Taro 90 101 "\
         "\n Taro 90 100 "\
         "\n Taro 90 100 "\
         "\n Taro 90 100 "\
@@ -90,7 +90,7 @@ do
           "Taro\n90\n100\n"\
           "Taro\n90\n100\n"\
           "Taro\n90\n100\n"\
-          "Taro\n90\n100\n"\
+          "Taro\n90\n101\n"\
           "Taro\n90\n100\n"\
           "Taro\n90\n100\n"\
           "Taro\n90\n100\n"\
