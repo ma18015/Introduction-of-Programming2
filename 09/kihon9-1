@@ -1,5 +1,6 @@
 #!/bin/sh
 
+shpath=$PWD
 cd $(dirname $0)
 path=${1:-../src}
 cd $path
@@ -44,13 +45,20 @@ echo -e "\n==========Test case==========" \
         "\n 10001 Taro 900 10002 Jiro 7000 10003 Saburo 360 10003" \
         "\n============================="
 
+fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
   echo -e "\n============================="
   echo "$filename"
   echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile filed." \
+            "\n============================="
+    continue
+  fi
   echo 10001 Taro 90 10002 Jiro 70 10003 Saburo 60 10002 | $PWD/$filename
   echo -e " expected: StudentID 10002, Name Jiro, English 70.\n"
   echo 10 Ao 90 20 Shiro 70 30 Kiiro 60 20 | $PWD/$filename
@@ -62,8 +70,15 @@ do
   echo -e "============================="
 done
 
-n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+if [ ${#fail[@]} -gt 0 ]; then
+  echo -e "\n\n========Failed files========="
+  for failfile in ${fail[@]}; do
+    echo ${failfile}
+  done
+  echo "============================="
+fi
 
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========compile check========" \
         "\nSrc File      : $n_efile" \
         "\nExecute File  : $n_file" \

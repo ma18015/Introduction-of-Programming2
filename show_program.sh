@@ -35,7 +35,6 @@ do
   echo "----------------------------"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
-    # fail("${fail[@]}" $cfile)
     fail+=( $cfile )
     echo -e "Compile filed." \
             "\n============================="

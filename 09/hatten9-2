@@ -1,5 +1,6 @@
 #!/bin/sh
 
+shpath=$PWD
 cd $(dirname $0)
 path=${1:-../src}
 cd $path
@@ -43,13 +44,20 @@ echo -e "\n==========Test case==========" \
         "\n 9 4 -9 4" \
         "\n============================="
 
+fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
   echo -e "\n============================="
   echo "$filename"
   echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile filed." \
+            "\n============================="
+    continue
+  fi
   echo 2 3 4 5 | $PWD/$filename
   echo -e " expected: -7+22i\n"
   echo 1 0 1 0 | $PWD/$filename
@@ -67,8 +75,15 @@ do
   echo -e "============================="
 done
 
-n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+if [ ${#fail[@]} -gt 0 ]; then
+  echo -e "\n\n========Failed files========="
+  for failfile in ${fail[@]}; do
+    echo ${failfile}
+  done
+  echo "============================="
+fi
 
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========compile check========" \
         "\nSrc File      : $n_efile" \
         "\nExecute File  : $n_file" \
