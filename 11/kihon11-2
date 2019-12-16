@@ -1,47 +1,13 @@
 #!/bin/bash
+. ../util.sh --source-only
 
 shpath=$PWD
 cd $(dirname $0)
 path=${1:-../src}
 cd $path
 
-tfile=`basename $0`
-n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
-
-if [ $n_file = 0 ]; then
-  echo "There is no file starting with $tfile"
-  exit 1
-fi
-
-# rm extra files
-ex_file=`ls * | grep -Ev "*.c"`
-n_ex_file=`ls -1 * 2>/dev/null | grep -Ev "*.c" | wc -l`
-if [ $n_ex_file -gt 0 ]; then
-  echo "-- removed --------------"
-  echo $ex_file
-  echo "-------------------------"
-  rm $ex_file
-fi
-
-echo -e "\n============================="\
-        "\n* Write input strings to file whose name is entered by user."\
-        "\n* Input should be"\
-        "\n    File name: ..."\
-        "\n    Input string: ..."\
-        "\n============================="
-
-echo -e "\n==========Test case=========="\
-        "\n fff abcde" \
-        "\n asdasdasdasda a121$323$%&" \
-        "\n a.txt a...\^-0\)\(\'\&\%\$\#\"\!\?\>\<\*\{\}_"\
-        "\n============================="
-
-fail=()
-wrong_file_name=()
-wrong_input_string=()
-
 RED="\033[31m%s\033[m\n\n"
-check() {
+check(){
   file="$path/$1"
   string="$2"
   if [ -e $file ]; then
@@ -65,6 +31,43 @@ check() {
   return 3
 }
 
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm extra files
+ex_file=`ls * | grep -Ev "*.c"`
+n_ex_file=`ls -1 * 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_ex_file -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $ex_file
+  echo "-------------------------"
+  rm $ex_file
+fi
+
+echo -e "\n============================="\
+        "\n* Write input strings to file whose name is entered by user."\
+        "\n* Input should be"\
+        "\n    File name: ..."\
+        "\n    Input string: ...\n"\
+        "\n* Must check fopen is NULL"
+        "\n============================="
+
+echo -e "\n==========Test case=========="\
+        "\n fff abcde" \
+        "\n asdasdasdasda a121$323$%&" \
+        "\n a.txt a...\^-0\)\(\'\&\%\$\#\"\!\?\>\<\*\{\}_"\
+        "\n============================="
+
+fail=()
+wrong_file_name=()
+wrong_input_string=()
+
+
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
@@ -87,20 +90,8 @@ do
   echo -e "============================="
 done
 
-if [ ${#wrong_file_name[@]} -gt 0 ]; then
-  echo -e "\n\n=======Wrong File name======="
-  for failfile in ${wrong_file_name[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
-if [ ${#wrong_input_string[@]} -gt 0 ]; then
-  echo -e "\n\n=========Wrong string========"
-  for failfile in ${wrong_input_string[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
+print_files wrong_input_string[@] "Wrong string"
+print_files wrong_file_name[@] "Wrong File name"
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========Compile check========" \
@@ -109,10 +100,4 @@ echo -e "\n========Compile check========" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
 
-if [ ${#fail[@]} -gt 0 ]; then
-  echo -e "\n\n========Failed files========="
-  for failfile in ${fail[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
+print_files fail[@] "Failed files"
