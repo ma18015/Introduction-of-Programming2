@@ -1,0 +1,65 @@
+#!/bin/sh
+
+shpath=$PWD
+cd $(dirname $0)
+path=${1:-../src}
+cd $path
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Read file, get values and cal mean value." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n============================="
+
+fail=()
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile filed." \
+            "\n============================="
+    continue
+  fi
+  echo $PWD/$filename
+  echo -e " expected: Mean height: 168.5, Mean weight: 62.025000...\n"
+  echo -e "============================="
+done
+
+if [ ${#fail[@]} -gt 0 ]; then
+  echo -e "\n\n========Failed files========="
+  for failfile in ${fail[@]}; do
+    echo ${failfile}
+  done
+  echo "============================="
+fi
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+echo -e "\n========compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="

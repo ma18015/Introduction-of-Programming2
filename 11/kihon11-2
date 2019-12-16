@@ -1,0 +1,118 @@
+#!/bin/bash
+
+shpath=$PWD
+cd $(dirname $0)
+path=${1:-../src}
+cd $path
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm extra files
+ex_file=`ls * | grep -Ev "*.c"`
+n_ex_file=`ls -1 * 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_ex_file -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $ex_file
+  echo "-------------------------"
+  rm $ex_file
+fi
+
+echo -e "\n============================="\
+        "\n* Write input strings to file whose name is entered by user."\
+        "\n* Input should be"\
+        "\n    File name: ..."\
+        "\n    Input string: ..."\
+        "\n============================="
+
+echo -e "\n==========Test case=========="\
+        "\n fff abcde" \
+        "\n asdasdasdasda a121$323$%&" \
+        "\n a.txt a...\^-0\)\(\'\&\%\$\#\"\!\?\>\<\*\{\}_"\
+        "\n============================="
+
+fail=()
+wrong_file_name=()
+wrong_input_string=()
+
+RED="\033[31m%s\033[m\n\n"
+check() {
+  file="$path/$1"
+  string="$2"
+  if [ -e $file ]; then
+    echo -e "\nFile exists"
+    in_file=`cat $file`
+    if [ $string = $in_file ]; then
+      echo -e "Correct strings\n"
+      rm $file
+      return 0
+    else
+      wrong_input_string+=( $cfile )
+      printf $RED "Wrong strings"
+      rm $file
+      return 1
+    fi
+  else
+    wrong_file_name+=( $cfile )
+    printf "\n$RED" "Wrong file name"
+    return 2
+  fi
+  return 3
+}
+
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile filed." \
+            "\n============================="
+    continue
+  fi
+  echo -e "fff\nabcde\n" | $PWD/$filename
+  check "fff" "abcde"
+  echo -e "asdasdasdasda\na121$323$%&\n" | $PWD/$filename
+  check "asdasdasdasda" "a121$323$%&"
+  echo -e "a.txt\na...\^-0\)\(\'\&\%\$\#\"\!\?\>\<\*\{\}_\n" | $PWD/$filename
+  check "a.txt" "a...\^-0\)\(\'\&\%\$\#\"\!\?\>\<\*\{\}_"
+  echo -e "============================="
+done
+
+if [ ${#wrong_file_name[@]} -gt 0 ]; then
+  echo -e "\n\n=======Wrong File name======="
+  for failfile in ${wrong_file_name[@]}; do
+    echo ${failfile}
+  done
+  echo "============================="
+fi
+if [ ${#wrong_input_string[@]} -gt 0 ]; then
+  echo -e "\n\n=========Wrong string========"
+  for failfile in ${wrong_input_string[@]}; do
+    echo ${failfile}
+  done
+  echo "============================="
+fi
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+echo -e "\n========Compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="
+
+if [ ${#fail[@]} -gt 0 ]; then
+  echo -e "\n\n========Failed files========="
+  for failfile in ${fail[@]}; do
+    echo ${failfile}
+  done
+  echo "============================="
+fi
