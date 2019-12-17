@@ -1,0 +1,80 @@
+#!/bin/sh
+. ../util.sh --source-only
+
+shpath=$PWD
+cd $(dirname $0)
+path=${1:-../src}
+cd $path
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Write 9*9 list to file.\n" \
+        "\n* Layout should be aligned." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n Only cmopiling test."\
+        "\n============================="
+
+fail=()
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  echo -e "\n============================="
+  echo "$filename"
+  echo "----------------------------"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile filed." \
+            "\n============================="
+    continue
+  fi
+  echo "tmp" | $PWD/$filename
+  echo -e " expected: "\
+        "\n 1  2  3  4  5  6  7  8  9"\
+        "\n 2  4  6  8 10 12 14 16 18"\
+        "\n 3  6  9 12 15 18 21 24 27"\
+        "\n 4  8 12 16 20 24 28 32 36"\
+        "\n 5 10 15 20 25 30 35 40 45"\
+        "\n 6 12 18 24 30 36 42 48 54"\
+        "\n 7 14 21 28 35 42 49 56 63"\
+        "\n 8 16 24 32 40 48 56 64 72"\
+        "\n 9 18 27 36 45 54 63 72 81"
+  echo -e "============================="
+done
+
+if [ ${#fail[@]} -gt 0 ]; then
+  echo -e "\n\n========Failed files========="
+  for failfile in ${fail[@]}; do
+    echo ${failfile}
+  done
+  echo "============================="
+fi
+
+# NULL check
+null_check $tfile
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+echo -e "\n========Compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="
