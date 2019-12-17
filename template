@@ -1,5 +1,5 @@
-#!/bin/sh
-. ../utils.sh
+#!/bin/bash
+. ../utils.sh --source-only
 
 shpath=$PWD
 cd $(dirname $0)
