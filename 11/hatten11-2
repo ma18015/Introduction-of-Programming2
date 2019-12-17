@@ -25,11 +25,13 @@ if [ $n_efile -gt 0 ]; then
 fi
 
 echo -e "\n=============================" \
-        "\n* Read file and get max height and weight." \
+        "\n* Read file and search inputed name's height and weight." \
         "\n============================="
 
 echo -e "\n==========Test case==========" \
-        "\n Only cmopiling test."\
+        "\n Jiro"\
+        "\n Taro"\
+        "\n Shiro"\
         "\n============================="
 
 # make data file which program reads
@@ -54,9 +56,12 @@ do
             "\n============================="
     continue
   fi
-  $PWD/$filename
-  echo -e " expected: Mean height: 182.0cm"\
-        "\n           Mean weight: 76.5kg\n"
+  echo "Jiro" | $PWD/$filename
+  echo -e " expected: 162.0cm, 51.6kg\n"
+  echo "Taro" | $PWD/$filename
+  echo -e " expected: 160.0cm, 59.3kg\n"
+  echo "Shiro" | $PWD/$filename
+  echo -e " expected: 170.0cm, 60.7kg\n"
   echo -e "============================="
 done
 
