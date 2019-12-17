@@ -90,6 +90,10 @@ do
   echo -e "============================="
 done
 
+# NULL check
+null_check $tfile
+
+# print files which is not correct output
 print_files wrong_input_string[@] "Wrong string"
 print_files wrong_file_name[@] "Wrong File name"
 
