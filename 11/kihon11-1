@@ -24,11 +24,18 @@ if [ $n_efile -gt 0 ]; then
 fi
 
 echo -e "\n=============================" \
-        "\n* Read file, get values and cal mean value." \
+        "\n* Read file and get max height and weight." \
         "\n============================="
 
 echo -e "\n==========Test case==========" \
+        "\n Only cmopiling test."\
         "\n============================="
+
+# make data file which program reads
+echo -e "Taro   160.0 59.3"\
+        "\nJiro   162.0 51.6"\
+        "\nSaburo 182.0 76.5"\
+        "\nShiro  170.0 60.7" | tee ./data ./data.txt
 
 fail=()
 for cfile in $tfile*.c
@@ -44,8 +51,9 @@ do
             "\n============================="
     continue
   fi
-  echo $PWD/$filename
-  echo -e " expected: Mean height: 168.5, Mean weight: 62.025000...\n"
+  $PWD/$filename
+  echo -e " expected: Mean height: 182.0cm"\
+        "\n           Mean weight: 76.5kg\n"
   echo -e "============================="
 done
 
@@ -56,6 +64,8 @@ if [ ${#fail[@]} -gt 0 ]; then
   done
   echo "============================="
 fi
+
+rm ./data ./data.txt
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========compile check========" \
