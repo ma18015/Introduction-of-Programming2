@@ -9,9 +9,9 @@ pad_print(){
   string=${1}
   len=$(( (padlength-${#string})/2 ))
   midlen=$(( len+${#sting} ))
-  printf "\n%*.*s" 0 $len "$pad"
-  printf "%s" "$string"
-  printf "%*.*s\n" $midlen $(($padlength-$len-${#string})) "$pad"
+  printf "\n%*.*s" 0 $(($len-1)) "$pad"
+  printf $RED " $string "
+  printf "%*.*s\n" $midlen $(($padlength-$len-${#string}-1)) "$pad"
 }
 
 print_files(){
