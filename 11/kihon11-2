@@ -6,7 +6,6 @@ cd $(dirname $0)
 path=${1:-../src}
 cd $path
 
-RED="\033[31m%s\033[m\n\n"
 check(){
   file="$path/$1"
   string="$2"
@@ -19,13 +18,13 @@ check(){
       return 0
     else
       wrong_input_string+=( $cfile )
-      printf $RED "Wrong strings"
+      printf "$RED\n\n" "Wrong strings"
       rm $file
       return 1
     fi
   else
     wrong_file_name+=( $cfile )
-    printf "\n$RED" "Wrong file name"
+    printf "\n$RED\n\n" "Wrong file name"
     return 2
   fi
   return 3
