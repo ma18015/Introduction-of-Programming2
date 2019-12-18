@@ -34,8 +34,18 @@ null_check(){
     return 1
   else
     printf "\n$pad\n"
-    printf $GREEN "All files check NULL"
+    printf $GREEN " All files check NULL"
     printf "\n$pad\n"
     return 0
+  fi
+}
+
+extract_filename(){
+  src=${1}
+  wrotefile=`pcregrep -o --no-filename "(?<=fopen\(\"|fopen\(\s\").*?(?=\",\"w\"\)|\",\s\"w\"\))" $src`
+  if [ ${#wrotefile} -gt 0 ]; then
+    echo "$wrotefile"
+  else
+    echo "tmp.dat"
   fi
 }
