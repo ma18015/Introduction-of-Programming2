@@ -55,7 +55,7 @@ do
     continue
   fi
   $PWD/$filename
-  echo -e " expected: Mean height: 182.0cm"\
+  echo -e " Expected: Mean height: 182.0cm"\
         "\n           Mean weight: 76.5kg\n"
   echo -e "============================="
 done
