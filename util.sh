@@ -1,17 +1,17 @@
 #!/bin/bash
 
-RED="\033[31m%s\033[m"
-GREEN="\033[32m%s\033[m"
-pad=$(printf '%0.1s' "="{1..29})
+RED="\e[31m%s\e[m"
+GREEN="\e[32m%s\e[m"
+pad=$(printf "%0.1s" "="{1..29})
 
 pad_print(){
   padlength=29
   string=${1}
   len=$(( (padlength-${#string})/2 ))
   midlen=$(( len+${#sting} ))
-  printf "\n%*.*s" 0 $(($len-1)) "$pad"
-  printf $RED " $string "
-  printf "%*.*s\n" $midlen $(($padlength-$len-${#string}-1)) "$pad"
+  printf "\n%*.*s" 0 $((len-1)) "$pad"
+  printf " $RED " "${string}"
+  printf "%*.*s\n" $midlen $((padlength-len-${#string}-1)) "$pad"
 }
 
 print_files(){
