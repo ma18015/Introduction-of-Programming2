@@ -47,7 +47,7 @@ do
             "\n============================="
     continue
   fi
-  echo "tmp.dat\n" | $PWD/$filename
+  echo "tmp.dat" | $PWD/$filename
   wrotefile=`extract_filename "$PWD/$cfile"`
   echo -e "\nwrote file is ${wrotefile}"
   cat "$PWD/$wrotefile"
