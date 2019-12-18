@@ -52,7 +52,7 @@ do
     continue
   fi
   echo  | $PWD/$filename
-  echo -e " expected: \n"
+  echo -e " Expected: \n"
   echo -e "============================="
 done
 
