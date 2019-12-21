@@ -40,7 +40,7 @@ null_check(){
   else
     printf "\n$pad\n"
     printf " $YELLOW\n" "WARNING: NULL check is not completed"
-    printf " $YELLOW\n" "         Please check by yourself"
+    printf " $YELLOW\n\n" "         Please check by yourself"
     printf " $GREEN" "All files check NULL"
     printf "\n$pad\n"
     return 0
@@ -57,3 +57,4 @@ extract_filename(){
     echo "tmp.dat"
   fi
 }
+

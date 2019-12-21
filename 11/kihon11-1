@@ -55,11 +55,12 @@ do
     continue
   fi
   readfile=`extract_filename "$PWD/$cfile" "r"`
+  echo -e "Read file is ${readfile}"
   echo -e "Taro   160.0 59.3"\
           "\nJiro   162.0 51.6"\
           "\nSaburo 182.0 76.5"\
           "\nShiro  170.0 60.7" | tee "$PWD/${readfile}"
-  echo -e "\nRead file is ${readfile}"
+  echo ""
   echo -e "\n" | $PWD/$filename
   echo -e " Expected: Mean height: 182.0cm"\
         "\n           Mean weight: 76.5kg"
