@@ -37,16 +37,16 @@ echo -e "\n=== Read file is ========="
 echo -e "Taro   160.0 59.3"\
         "\nJiro   162.0 51.6"\
         "\nSaburo 182.0 76.5"\
-        "\nShiro  170.0 60.7" | tee ./data ./data.txt
+        "\nShiro  170.0 60.7"
 echo -e "=========================="
 
 fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
+  printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
     fail+=( $cfile )
@@ -54,24 +54,21 @@ do
             "\n============================="
     continue
   fi
-  $PWD/$filename
+  readfile=`extract_filename "$PWD/$cfile" "r"`
+  echo -e "Taro   160.0 59.3"\
+          "\nJiro   162.0 51.6"\
+          "\nSaburo 182.0 76.5"\
+          "\nShiro  170.0 60.7" | tee "$PWD/${readfile}"
+  echo -e "\nRead file is ${readfile}"
+  echo -e "\n" | $PWD/$filename
   echo -e " Expected: Mean height: 182.0cm"\
-        "\n           Mean weight: 76.5kg\n"
-  echo -e "============================="
+        "\n           Mean weight: 76.5kg"
+  rm $PWD/${readfile}
+  printf "%s\n" "$pad"
 done
-
-if [ ${#fail[@]} -gt 0 ]; then
-  echo -e "\n\n========Failed files========="
-  for failfile in ${fail[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
 
 # NULL check
 null_check $tfile
-
-rm ./data ./data.txt
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========Compile check========" \
@@ -79,3 +76,6 @@ echo -e "\n========Compile check========" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+
