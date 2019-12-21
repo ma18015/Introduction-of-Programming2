@@ -2,6 +2,7 @@
 
 RED="\e[31m%s\e[m"
 GREEN="\e[32m%s\e[m"
+YELLOW="\e[33m%s\e[m"
 pad=$(printf "%0.1s" "="{1..29})
 
 pad_print(){
@@ -28,13 +29,16 @@ print_files(){
 
 null_check(){
   basename=${1}
-  arr=( $(grep -LE "\s*fp\s*==\s*NULL\s*" $basename*.c) )
+  # arr=( $(grep -LE "\s*fp\s*==\s*NULL\s*" $basename*.c) )
+  arr=( $(grep -LE "==\s*NULL\s*" $basename*.c) )
   if [ ${#arr[@]} -gt 0 ]; then
     print_files arr[@] "Not NULL check"
     return 1
   else
     printf "\n$pad\n"
-    printf $GREEN " All files check NULL"
+    printf " $YELLOW\n" "WARNING: NULL check is not completed"
+    printf " $YELLOW\n" "         Please check by yourself"
+    printf " $GREEN" "All files check NULL"
     printf "\n$pad\n"
     return 0
   fi
