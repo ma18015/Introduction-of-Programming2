@@ -66,11 +66,10 @@ fail=()
 wrong_file_name=()
 wrong_input_string=()
 
-
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  printf "\n$pad\n"
+  printf "\n%s\n" "$pad"
   echo "$filename"
   printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
@@ -110,3 +109,4 @@ echo -e "\n========Compile check========" \
         "\n============================="
 
 print_files fail[@] "Failed files"
+
