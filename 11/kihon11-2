@@ -10,21 +10,21 @@ check(){
   file="$path/$1"
   string="$2"
   if [ -e $file ]; then
-    echo -e "\nFile exists"
+    printf "\n %s\n" "✓ File exits"
     in_file=`cat $file`
     if [ $string = $in_file ]; then
-      echo -e "Correct strings\n"
+      printf " %s\n" "✓ Correct strings"
       rm $file
       return 0
     else
       wrong_input_string+=( $cfile )
-      printf "$RED\n\n" "Wrong strings"
+      printf " $RED\n\n" "Wrong strings"
       rm $file
       return 1
     fi
   else
     wrong_file_name+=( $cfile )
-    printf "\n$RED\n\n" "Wrong file name"
+    printf "\n $RED\n\n" "Wrong file name"
     return 2
   fi
   return 3
@@ -53,14 +53,14 @@ echo -e "\n============================="\
         "\n* Input should be"\
         "\n    File name: ..."\
         "\n    Input string: ...\n"\
-        "\n* Must check fopen is NULL"
+        "\n* Must check fopen is NULL"\
         "\n============================="
 
 echo -e "\n==========Test case=========="\
         "\n fff abcde" \
         "\n asdasdasdasda a121$323$%&" \
         "\n a.txt a...\^-0\)\(\'\&\%\$\#\"\!\?\>\<\*\{\}_"\
-        "\n============================="
+        "\n=============================\n"
 
 fail=()
 wrong_file_name=()
@@ -70,9 +70,9 @@ wrong_input_string=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n$pad\n"
   echo "$filename"
-  echo "----------------------------"
+  printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
     fail+=( $cfile )
@@ -86,15 +86,21 @@ do
   check "asdasdasdasda" "a121$323$%&"
   echo -e "a.txt\na...\^-0\)\(\'\&\%\$\#\"\!\?\>\<\*\{\}_\n" | $PWD/$filename
   check "a.txt" "a...\^-0\)\(\'\&\%\$\#\"\!\?\>\<\*\{\}_"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
 
 # NULL check
 null_check $tfile
 
 # print files which is not correct output
-print_files wrong_input_string[@] "Wrong string"
-print_files wrong_file_name[@] "Wrong File name"
+if [ ${#wrong_input_string[@]} -eq 0 -a ${#wrong_file_name[@]} -eq 0 ]; then
+  printf "\n$pad\n"
+  printf " $GREEN" "All files are correct output"
+  printf "\n$pad\n"
+else
+  print_files wrong_input_string[@] "Wrong string"
+  print_files wrong_file_name[@] "Wrong File name"
+fi
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========Compile check========" \

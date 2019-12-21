@@ -3,10 +3,11 @@
 RED="\e[31m%s\e[m"
 GREEN="\e[32m%s\e[m"
 YELLOW="\e[33m%s\e[m"
-pad=$(printf "%0.1s" "="{1..29})
+pad=$(printf "%0.1s" "="{1..40})
+line=$(printf "%0.1s" "-"{1..40})
 
 pad_print(){
-  padlength=29
+  padlength=40
   string=${1}
   len=$(( (padlength-${#string})/2 ))
   midlen=$(( len+${#sting} ))
