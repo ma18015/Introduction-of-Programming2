@@ -30,8 +30,10 @@ print_files(){
 
 null_check(){
   basename=${1}
-  # arr=( $(grep -LE "\s*fp\s*==\s*NULL\s*" $basename*.c) )
-  arr=( $(grep -LE "==\s*NULL\s*" $basename*.c) )
+  arr=( $(grep -LE "\s*fp\s*==\s*NULL\s*" $basename*.c) )
+  # arr=( $(cat $basename*.c | tr -d " " | grep -LE "==NULL" ) )
+  # cat ./* | tr -d " *" | pcregrep -o --no-filename "(?<=FILE).*?(?=\;)"
+  echo ${arr[@]}
   if [ ${#arr[@]} -gt 0 ]; then
     print_files arr[@] "Not NULL check"
     return 1
@@ -47,9 +49,10 @@ null_check(){
 
 extract_filename(){
   src=${1}
-  wrotefile=`pcregrep -o --no-filename "(?<=fopen\(\"|fopen\(\s\").*?(?=\",\"w\"\)|\",\s\"w\"\))" $src`
-  if [ ${#wrotefile} -gt 0 ]; then
-    echo "$wrotefile"
+  mode=${2}
+  filename=`cat $src | tr -d " " | pcregrep -o --no-filename "(?<=fopen\(\").*?(?=\",\"$mode\"\))"`
+  if [ ${#filename} -gt 0 ]; then
+    echo "$filename"
   else
     echo "tmp.dat"
   fi
