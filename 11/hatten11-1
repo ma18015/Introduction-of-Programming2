@@ -37,9 +37,9 @@ fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
+  printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
     fail+=( $cfile )
@@ -48,10 +48,10 @@ do
     continue
   fi
   echo "tmp.dat" | $PWD/$filename
-  wrotefile=`extract_filename "$PWD/$cfile"`
+  wrotefile=`extract_filename "$PWD/$cfile" "w"`
   echo -e "\nWrote file is ${wrotefile}"
   cat "$PWD/$wrotefile"
-  # cat $PWD/`extract_filename "$PWD/$cfile"`
+  # cat $PWD/`extract_filename "$PWD/$cfile" "w"`
   echo -e "\n Expected: "\
           "\n 1  2  3  4  5  6  7  8  9"\
           "\n 2  4  6  8 10 12 14 16 18"\
@@ -62,17 +62,9 @@ do
           "\n 7 14 21 28 35 42 49 56 63"\
           "\n 8 16 24 32 40 48 56 64 72"\
           "\n 9 18 27 36 45 54 63 72 81"
-  echo -e "============================="
+  printf "%s\n" "$pad"
   rm "$PWD/$wrotefile"
 done
-
-if [ ${#fail[@]} -gt 0 ]; then
-  echo -e "\n\n========Failed files========="
-  for failfile in ${fail[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
 
 # NULL check
 null_check $tfile
@@ -83,3 +75,6 @@ echo -e "\n========Compile check========" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+
