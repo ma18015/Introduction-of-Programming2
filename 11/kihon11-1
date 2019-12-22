@@ -24,8 +24,9 @@ if [ $n_efile -gt 0 ]; then
   rm $efile
 fi
 
-echo -e "\n=============================" \
-        "\n* Read file and get max height and weight." \
+echo -e "\n============================="\
+        "\n* Read file and get max height and weight.\n"\
+        "\n* Must check if fopen return value is NULL."\
         "\n============================="
 
 echo -e "\n==========Test case==========" \

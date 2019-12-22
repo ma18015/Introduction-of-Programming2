@@ -24,9 +24,10 @@ if [ $n_efile -gt 0 ]; then
   rm $efile
 fi
 
-echo -e "\n=============================" \
-        "\n* Write 9*9 list to file.\n" \
-        "\n* Layout should be aligned." \
+echo -e "\n============================="\
+        "\n* Write 9*9 list to file.\n"\
+        "\n* Layout should be aligned.\n"\
+        "\n* Must check if fopen return value is NULL."\
         "\n============================="
 
 echo -e "\n==========Test case==========" \

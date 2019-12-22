@@ -53,7 +53,7 @@ echo -e "\n============================="\
         "\n* Input should be"\
         "\n    File name: ..."\
         "\n    Input string: ...\n"\
-        "\n* Must check fopen is NULL"\
+        "\n* Must check if fopen return value is NULL."\
         "\n============================="
 
 echo -e "\n==========Test case=========="\
