@@ -10,7 +10,7 @@ pad_print(){
   padlength=40
   string=${1}
   len=$(( (padlength-${#string})/2 ))
-  midlen=$(( len+${#sting} ))
+  midlen=$(( len+${#sting}-1 ))
   printf "\n%*.*s" 0 $((len-1)) "$pad"
   printf " $RED " "${string}"
   printf "%*.*s\n" $midlen $((padlength-len-${#string}-1)) "$pad"
@@ -28,25 +28,6 @@ print_files(){
   fi
 }
 
-null_check(){
-  basename=${1}
-  arr=( $(grep -LE "\s*fp\s*==\s*NULL\s*" $basename*.c) )
-  # arr=( $(cat $basename*.c | tr -d " " | grep -LE "==NULL" ) )
-  # cat ./* | tr -d " *" | pcregrep -o --no-filename "(?<=FILE).*?(?=\;)"
-  echo ${arr[@]}
-  if [ ${#arr[@]} -gt 0 ]; then
-    print_files arr[@] "Not NULL check"
-    return 1
-  else
-    printf "\n$pad\n"
-    printf " $YELLOW\n" "WARNING: NULL check is not completed"
-    printf " $YELLOW\n\n" "         Please check by yourself"
-    printf " $GREEN" "All files check NULL"
-    printf "\n$pad\n"
-    return 0
-  fi
-}
-
 extract_filename(){
   src=${1}
   mode=${2}
@@ -55,6 +36,43 @@ extract_filename(){
     echo "$filename"
   else
     echo "tmp.dat"
+  fi
+}
+
+null_check(){
+  src=("${!1}")
+  no_null_check=()
+
+  for cfile in ${src[@]}; do
+    vars=(`cat ${cfile} | tr -d " *" | pcregrep -o "(?<=FILE).*?(?=\;)" | tr "," " "`)
+    # delete // comment out and spaces
+    code=`cat ${cfile} | tr -d " " | grep -v "^\s*//"`
+    # delete /**/ comment out
+    code=`echo ${code} | sed -e "s/\/\*.*\*\// /"`
+
+    for var in ${vars[@]}; do
+      cond="${var}=fopen("
+      # nc="if(${var}==NULL)"
+      nc1="${var}==NULL"
+      nc2="${var}!=NULL"
+      if [[ ${code} == *${cond}* ]]; then
+        if [[ ${code} != *${nc1}* ]]; then
+        # if ! { [[ ${code} != *${nc1}* ]] || [[ ${code} != *${nc2}* ]]; }; then
+          no_null_check+=(`basename ${cfile}`)
+          break
+        fi
+      fi
+    done
+  done
+
+  if [ ${#no_null_check[@]} -gt 0 ]; then
+    print_files no_null_check[@] "Not NULL check"
+    return 1
+  else
+    printf "\n$pad\n"
+    printf " $GREEN" "All files check NULL"
+    printf "\n$pad\n"
+    return 0
   fi
 }
 
