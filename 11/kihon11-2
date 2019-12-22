@@ -65,7 +65,6 @@ echo -e "\n==========Test case=========="\
 fail=()
 wrong_file_name=()
 wrong_input_string=()
-
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
@@ -89,7 +88,8 @@ do
 done
 
 # NULL check
-null_check $tfile
+src=($PWD/$tfile*.c)
+null_check src[@]
 
 # print files which is not correct output
 if [ ${#wrong_input_string[@]} -eq 0 -a ${#wrong_file_name[@]} -eq 0 ]; then

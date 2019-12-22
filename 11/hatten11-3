@@ -55,6 +55,13 @@ do
             "\n============================="
     continue
   fi
+  readfile=`extract_filename "$PWD/$cfile" "r"`
+  echo -e "Read file is ${readfile}\n"
+  echo -e "Taro   160.0 59.3"\
+          "\nJiro   162.0 51.6"\
+          "\nSaburo 182.0 76.5"\
+          "\nShiro  170.0 60.7" > $PWD/${readfile}
+
   echo "tmp.dat" | $PWD/$filename
   wrotefile=`extract_filename "$PWD/$cfile" "w"`
   echo -e "\nWrote file is \"${wrotefile}\""
@@ -64,14 +71,14 @@ do
           "\nJiro   51.6  162.0"\
           "\nSaburo 76.5  182.0"\
           "\nShiro  60.7  170.0"
-  printf "%s\n" "$pad"
+  rm "$PWD/$readfile"
   rm "$PWD/$wrotefile"
+  printf "%s\n" "$pad"
 done
 
 # NULL check
-null_check $tfile
-
-rm ./data ./data.txt
+src=($PWD/$tfile*.c)
+null_check src[@]
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========Compile check========" \

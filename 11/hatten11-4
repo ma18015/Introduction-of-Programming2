@@ -40,7 +40,7 @@ echo -e "\n==========Test case==========" \
         "\n    5       |     3      |      3"\
         "\n    0       |     3      |     10"\
         "\n    1       |    -1      |      1"\
-        "\n    2       |     3      |        "\
+        "\n    2       |     3      |       "\
         "\n============================="
 
 # make data file which program reads
@@ -66,12 +66,11 @@ do
     continue
   fi
   readfile=`extract_filename "$PWD/$cfile" "r"`
-  echo -e "Read file is ${readfile}"
+  echo -e "Read file is ${readfile}\n"
   echo -e "1 鉛筆 80"\
           "\n2 定規 200"\
           "\n3 けしごむ 30"\
           "\n4 電卓 1000" > $PWD/${readfile}
-  echo ""
   echo -e "2\n3\n" | $PWD/$filename
   echo -e "\n Expected: 600\n"
   echo -e "1\n1\n" | $PWD/$filename
@@ -86,12 +85,13 @@ do
   echo -e "\n Expected: (Invalid item number: 0) 300\n"
   echo -e "1\n-1\n1\n" | $PWD/$filename
   echo -e "\n Expected: (Invalid # of items: -1 (-80) ) 80\n"
-  printf "%s\n" "$pad"
   rm "$PWD/$readfile"
+  printf "%s\n" "$pad"
 done
 
 # NULL check
-null_check $tfile
+src=($PWD/$tfile*.c)
+null_check src[@]
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========Compile check========" \

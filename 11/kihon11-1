@@ -70,7 +70,8 @@ do
 done
 
 # NULL check
-null_check $tfile
+src=($PWD/$tfile*.c)
+null_check src[@]
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========Compile check========" \
