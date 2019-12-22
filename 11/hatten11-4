@@ -24,13 +24,23 @@ if [ $n_efile -gt 0 ]; then
   rm $efile
 fi
 
-echo -e "\n=============================" \
-        "\n* Write 9*9 list to file.\n" \
-        "\n* Layout should be aligned." \
+echo -e "\n============================="\
+        "\n* Read a file which has list of items."\
+        "\n  Input item number and # of items."\
+        "\n  Cal the total price and print it.\n"\
+        "\n* Must check if fopen return value is NULL."\
         "\n============================="
 
 echo -e "\n==========Test case==========" \
-        "\n ."\
+        "\nItem number | # of items | for err process"\
+        "\n    2       |     3      |       "\
+        "\n    1       |     1      |       "\
+        "\n    4       |     9      |       "\
+        "\n    1       |     0      |       "\
+        "\n    5       |     3      |      3"\
+        "\n    0       |     3      |     10"\
+        "\n    1       |    -1      |      1"\
+        "\n    2       |     3      |        "\
         "\n============================="
 
 # make data file which program reads
@@ -75,7 +85,7 @@ do
   echo -e "0\n3\n10\n" | $PWD/$filename
   echo -e "\n Expected: (Invalid item number: 0) 300\n"
   echo -e "1\n-1\n1\n" | $PWD/$filename
-  echo -e "\n Expected: (Invalid #items: -1 (-80) ) 80\n"
+  echo -e "\n Expected: (Invalid # of items: -1 (-80) ) 80\n"
   printf "%s\n" "$pad"
   rm "$PWD/$readfile"
 done
