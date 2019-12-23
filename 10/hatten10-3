@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+. ../util.sh --source-only
 
 shpath=$PWD
 cd $(dirname $0)
@@ -43,9 +44,9 @@ fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
+  printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
     # fail("${fail[@]}" $cfile)
@@ -68,16 +69,8 @@ do
   echo -e " expected: 3\n"
   echo -e "8\nThis is a pen.\n" | $PWD/$filename
   echo -e " expected: 2(This is )\n"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
-
-if [ ${#fail[@]} -gt 0 ]; then
-  echo -e "\n\n========Failed files========="
-  for failfile in ${fail[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========compile check========" \
@@ -85,3 +78,6 @@ echo -e "\n========compile check========" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+
