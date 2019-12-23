@@ -61,14 +61,6 @@ do
   printf "%s\n" "$pad"
 done
 
-if [ ${#fail[@]} -gt 0 ]; then
-  echo -e "\n\n========Failed files========="
-  for failfile in ${fail[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
-
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========compile check========" \
         "\nSrc File      : $n_file" \

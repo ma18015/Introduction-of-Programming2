@@ -1,5 +1,5 @@
 #!/bin/bash
-. ../utils.sh --source-only
+. ./util.sh --source-only
 
 shpath=$PWD
 cd $(dirname $0)
@@ -30,8 +30,8 @@ fi
 fail=()
 for cfile in $tfile*.c
 do
-  printf "\n%s\n" "$pad"
   filename=`basename $cfile .c`
+  printf "\n%s\n" "$pad"
   echo $filename
   printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
@@ -41,7 +41,6 @@ do
             "\n============================="
     continue
   fi
-  echo "----------------------------"
   cat $PWD/$cfile
   printf "%s\n" "$pad"
 done

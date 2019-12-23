@@ -33,7 +33,7 @@ echo -e "\n=============================" \
         "\n       int im;" \
         "\n    } complex\n" \
         "\n* If imaginary part is 0, 0i shouldn't be displayed." \
-        "\n  Like x: 3+0i  ->  o: 3" \
+        "\n  Like NG: 3+0i  ->  Okay: 3" \
         "\n============================="
 
 echo -e "\n==========Test case==========" \
