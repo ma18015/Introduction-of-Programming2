@@ -63,8 +63,9 @@ do
           "\nShiro  170.0 60.7" | tee "$PWD/${readfile}"
   echo ""
   echo -e "\n" | $PWD/$filename
-  echo -e " Expected: Mean height: 182.0cm"\
-        "\n           Mean weight: 76.5kg"
+  echo -e " Expected: "\
+        "\n  Mean height: 182.0cm"\
+        "\n  Mean weight: 76.5kg"
   rm $PWD/${readfile}
   printf "%s\n" "$pad"
 done

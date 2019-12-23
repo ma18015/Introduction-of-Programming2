@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+. ../utils.sh --source-only
 
 shpath=$PWD
 cd $(dirname $0)
@@ -16,23 +17,23 @@ if [ $n_file = 0 ]; then
 fi
 
 # rm only exec files
-efile=`ls $tfile* | grep -Ev "*.c"`
-n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
-if [ $n_efile -gt 0 ]; then
-  echo "-- removed --------------"
-  echo $efile
-  echo "-------------------------"
-  echo ""
-  rm $efile
-fi
+# efile=`ls $tfile* | grep -Ev "*.c"`
+# n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+# if [ $n_efile -gt 0 ]; then
+#   echo "-- removed --------------"
+#   echo $efile
+#   echo "-------------------------"
+#   echo ""
+#   rm $efile
+# fi
 
 fail=()
 for cfile in $tfile*.c
 do
-  echo "============================"
+  printf "\n%s\n" "$pad"
   filename=`basename $cfile .c`
   echo $filename
-  echo "----------------------------"
+  printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
     fail+=( $cfile )
@@ -42,16 +43,8 @@ do
   fi
   echo "----------------------------"
   cat $PWD/$cfile
-  echo -e "============================\n"
+  printf "%s\n" "$pad"
 done
-
-if [ ${#fail[@]} -gt 0 ]; then
-  echo -e "\n\n========Failed files========="
-  for failfile in ${fail[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "========compile check========" \
@@ -59,4 +52,6 @@ echo -e "========compile check========" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
 
