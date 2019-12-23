@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+. ../util.sh --source-only
 
 shpath=$PWD
 cd $(dirname $0)
@@ -29,7 +30,7 @@ echo -e "\n=============================" \
         "\n    int  Student ID" \
         "\n    char Student name " \
         "\n    int  English score\n" \
-        "\n  Student name includes no spaces." \
+        "\n  Student name includes no spaces.\n"\
         "\n* Structure is supposed to be\n" \
         "\n    struct{" \
         "\n       int id;" \
@@ -43,17 +44,17 @@ echo -e "\n==========Test case==========" \
         "\n 10002 Jiro 70"\
         "\n 10003 Saburo 60"\
         "\n 10002"\
-        "\n ----------------------"
+        "\n ----------------------"\
         "\n 10 Ao 90"\
         "\n 20 Shiro 70"\
         "\n 30 Kiiro 60"\
         "\n 20"\
-        "\n ----------------------"
+        "\n ----------------------"\
         "\n 10 Taro 90"\
         "\n 70 Jiro 70"\
         "\n 30 Saburo 60"\
         "\n 100"\
-        "\n ----------------------"
+        "\n ----------------------"\
         "\n 10001 Taro 900"\
         "\n 10002 Jiro 7000"\
         "\n 10003 Saburo 360"\
@@ -64,9 +65,9 @@ fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
+  printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
     fail+=( $cfile )
@@ -90,20 +91,15 @@ do
           "10002\nJiro\n7000\n"\
           "10003\nSaburo\n360\n10003\n" | $PWD/$filename
   echo -e " expected: StudentID 10003, Name Saburo, English 360.\n"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
 
-if [ ${#fail[@]} -gt 0 ]; then
-  echo -e "\n\n========Failed files========="
-  for failfile in ${fail[@]}; do
-    echo ${failfile}
-  done
-  echo "============================="
-fi
-
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-echo -e "\n========compile check========" \
+echo -e "\n========Compile check========" \
         "\nSrc File      : $n_efile" \
         "\nExecute File  : $n_file" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+
