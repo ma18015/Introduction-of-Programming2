@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+. ../util.sh --source-only
 
 cd $(dirname $0)
 path=${1:-../src}
@@ -33,13 +34,21 @@ echo -e "\n==========Test case==========" \
         "\ninput (<- 1 space at end of the word.)" \
         "\n============================="
 
+fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
+  printf "%s\n" "$line"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    # fail("${fail[@]}" $cfile)
+    fail+=( $cfile )
+    echo -e "Compile filed." \
+            "\n============================="
+    continue
+  fi
   echo This is a pen. | $PWD/$filename
   echo -e " expected: 14\n"
   echo I think, that is 2 pen. | $PWD/$filename
@@ -48,13 +57,15 @@ do
   echo -e " expected: 5\n"
   echo "input " | $PWD/$filename
   echo -e " expected: 6\n"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-
-echo -e "\n========compile check========" \
+echo -e "\n========Compile check========" \
         "\nSrc File      : $n_efile" \
         "\nExecute File  : $n_file" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+
