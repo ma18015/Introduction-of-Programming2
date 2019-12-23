@@ -54,7 +54,8 @@ null_check(){
       cond="${var}=fopen("
       # nc="if(${var}==NULL)"
       nc1="${var}==NULL"
-      nc2="${var}!=NULL"
+      # nc2="${var}!=NULL"
+      # nc3="(${var}=fopen(.*))==NULL"
       if [[ ${code} == *${cond}* ]]; then
         if [[ ${code} != *${nc1}* ]]; then
         # if ! { [[ ${code} != *${nc1}* ]] || [[ ${code} != *${nc2}* ]]; }; then
