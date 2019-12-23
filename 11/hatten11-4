@@ -28,6 +28,7 @@ echo -e "\n============================="\
         "\n* Read a file which has list of items."\
         "\n  Input item number and # of items."\
         "\n  Cal the total price and print it.\n"\
+        "\n* Must be able to process if read file line is over 4 lines.\n"\
         "\n* Must check if fopen return value is NULL."\
         "\n============================="
 
@@ -48,7 +49,9 @@ echo -e "\n=== Read file is ========="\
         "\n 1 鉛筆 80"\
         "\n 2 定規 200"\
         "\n 3 けしごむ 30"\
-        "\n 4 電卓 1000"
+        "\n 4 電卓 1000"\
+        "\n 5 コンパス 50"\
+        "\n 6 絵の具 300"
 echo -e "=========================="
 
 fail=()
@@ -70,7 +73,9 @@ do
   echo -e "1 鉛筆 80"\
           "\n2 定規 200"\
           "\n3 けしごむ 30"\
-          "\n4 電卓 1000" > $PWD/${readfile}
+          "\n4 電卓 1000"\
+          "\n5 コンパス 50"\
+          "\n6 絵の具 300" > $PWD/${readfile}
   echo -e "2\n3\n" | $PWD/$filename
   echo -e "\n Expected: 600\n"
   echo -e "1\n1\n" | $PWD/$filename
