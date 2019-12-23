@@ -49,7 +49,7 @@ if [ $n_ex_file -gt 0 ]; then
 fi
 
 echo -e "\n============================="\
-        "\n* Write input strings to file whose name is entered by user."\
+        "\n* Write input strings to file whose name is entered by user.\n"\
         "\n* Input should be"\
         "\n    File name: ..."\
         "\n    Input string: ...\n"\
