@@ -49,7 +49,6 @@ do
   printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
-    # fail("${fail[@]}" $cfile)
     fail+=( $cfile )
     echo -e "Compile filed." \
             "\n============================="
@@ -73,7 +72,7 @@ do
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-echo -e "\n========compile check========" \
+echo -e "\n========Compile check========" \
         "\nSrc File      : $n_file" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \

@@ -62,7 +62,7 @@ do
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-echo -e "\n========compile check========" \
+echo -e "\n========Compile check========" \
         "\nSrc File      : $n_file" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
