@@ -17,15 +17,15 @@ if [ $n_file = 0 ]; then
 fi
 
 # rm only exec files
-# efile=`ls $tfile* | grep -Ev "*.c"`
-# n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
-# if [ $n_efile -gt 0 ]; then
-#   echo "-- removed --------------"
-#   echo $efile
-#   echo "-------------------------"
-#   echo ""
-#   rm $efile
-# fi
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  echo ""
+  rm $efile
+fi
 
 fail=()
 for cfile in $tfile*.c
@@ -46,7 +46,7 @@ do
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-echo -e "========compile check========" \
+echo -e "\n========Compile check========" \
         "\nSrc File      : $n_file" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
