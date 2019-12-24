@@ -24,7 +24,7 @@ if [ $n_efile -gt 0 ]; then
 fi
 
 echo -e "\n=============================" \
-        "\n* Check palindrome without non alphabet.\n" \
+        "\n* Check palindrome without non alphabet." \
         "\n============================="
 
 echo -e "\n==========Test case==========" \
