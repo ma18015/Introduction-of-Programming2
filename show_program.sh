@@ -34,7 +34,7 @@ do
   printf "\n%s\n" "$pad"
   echo $filename
   printf "%s\n" "$line"
-  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  gcc "$PWD/$cfile" -o "$PWD/$filename" -Wall 2>> $shpath/gerr.log
   if [ $? -ne 0 ]; then
     fail+=( $cfile )
     echo -e "Compile filed." \
