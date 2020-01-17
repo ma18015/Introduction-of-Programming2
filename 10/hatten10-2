@@ -70,10 +70,9 @@ do
   printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
-    # fail("${fail[@]}" $cfile)
     fail+=( $cfile )
-    echo -e "Compile filed." \
-            "\n============================="
+    printf "$RED\n" "Compile filed."
+    printf "%s\n" "$pad"
     continue
   fi
   echo -e "2\n"\

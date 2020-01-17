@@ -64,11 +64,11 @@ do
             "\n============================="
     continue
   fi
-  echo Taro 176 64.5 Jiro 165 55.5 Saburo 168 70.0 Jiro | $PWD/$filename
+  echo -e "Taro\n176\n64.5\nJiro\n165\n55.5\nSaburo\n168\n70.0\nJiro\n" | $PWD/$filename
   echo -e " expected: Jiro, BMI is 20.385675.\n"
-  echo Taro 176 64.5 Jiro 165 55.5 Saburo 168 70.0 Jiro | $PWD/$filename
+  echo -e "Taro\n176\n64.5\nJiro\n165\n55.5\nSaburo\n168\n70.0\nJiro\n" | $PWD/$filename
   echo -e " expected: Jiro, BMI is 20.385675.\n"
-  echo Taro 176 64.5 Jiro 165 55.5 Saburo 168 70.0 Jiro | $PWD/$filename
+  echo -e "Taro\n176\n64.5\nJiro\n165\n55.5\nSaburo\n168\n70.0\nJiro\n" | $PWD/$filename
   echo -e " expected: Jiro, BMI is 20.385675.\n"
   printf "%s\n" "$pad"
 done
