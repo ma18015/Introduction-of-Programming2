@@ -38,7 +38,7 @@ These scripts are not used assert or that kind of thing. \
 Just run with some inputs and print ouputs, so you have to check the outputs with your own eyes. \
 If you have any idea to solve this problem(especially how to deal with `printf`), plz let me know.
 
-Defalt src path is `./src`, so plz put c files in src dir. \
+Defalt src path is `./src`, so plz put c files in src dir. If you download source files with `download.sh`, the source files are in `./src` dir.\
 Optionally, you can set your path to src by arg1 for all scripts below except for show\_program.sh. \
 Only for show\_program.sh you can set path by arg2.
 * test script \
