@@ -1,5 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+. ../util.sh --source-only
 
+shpath=$PWD
 cd $(dirname $0)
 path=${1:-../src}
 cd $path
@@ -37,32 +39,41 @@ echo -e "\n==========Test case==========" \
         "\n -1 -1 -1 -1 3" \
         "\n============================="
 
+fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
-  echo 1 2 3 4 1 | $PWD/$filename
+  printf "%s\n" "$line"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile failed." \
+            "\n============================="
+    continue
+  fi
+  echo -e "1\n2\n3\n4\n1\n" | $PWD/$filename
   echo -e "expected 1 2 3 4\n"
-  echo 1 2 3 4 3 | $PWD/$filename
+  echo -e "1\n2\n3\n4\n3\n" | $PWD/$filename
   echo -e "expected 37 54 81 118\n"
-  echo 1 2 3 4 10 | $PWD/$filename
+  echo -e "1\n2\n3\n4\n10\n" | $PWD/$filename
   echo -e "expected 4783807 6972050 10458075 15241882\n"
-  echo -3 2 4 4 2 | $PWD/$filename
+  echo -e "-3\n2\n4\n4\n2\n" | $PWD/$filename
   echo -e "expected 17 2 4 24\n"
-  echo 0 0 0 0 100 | $PWD/$filename
+  echo -e "0\n0\n0\n0\n100\n" | $PWD/$filename
   echo -e "expected 0 0 0 0\n"
-  echo -1 -1 -1 -1 3 | $PWD/$filename
+  echo -e "-1\n-1\n-1\n-1\n3\n" | $PWD/$filename
   echo -e "expected -4 -4 -4 -4"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-
-echo -e "\n========compile check========" \
+echo -e "\n========Compile Check========" \
         "\nSrc File      : $n_file" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+

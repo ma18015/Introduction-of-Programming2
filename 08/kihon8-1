@@ -53,15 +53,15 @@ do
             "\n============================="
     continue
   fi
-  echo "I am a student." | $PWD/$filename
+  echo -e "I am a student.\n" | $PWD/$filename
   echo -e " expected: 3\n"
-  echo "thirty-year-old" | $PWD/$filename
+  echo -e "thirty-year-old\n" | $PWD/$filename
   echo -e " expected: 0\n"
-  echo "    haha" | $PWD/$filename
+  echo -e "    haha\n" | $PWD/$filename
   echo -e " expected: 4\n"
-  echo "Hello   there." | $PWD/$filename
+  echo -e "Hello   there.\n" | $PWD/$filename
   echo -e " expected: 3\n"
-  echo "Hello         " | $PWD/$filename
+  echo -e "Hello         \n" | $PWD/$filename
   echo -e " expected: 9\n"
   printf "%s\n" "$pad"
 done

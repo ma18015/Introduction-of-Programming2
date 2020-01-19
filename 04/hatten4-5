@@ -1,5 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+. ../util.sh --source-only
 
+shpath=$PWD
 cd $(dirname $0)
 path=${1:-../src}
 cd $path
@@ -37,32 +39,41 @@ echo -e "\n==========Test case==========" \
         "\n2" \
         "\n============================="
 
+fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
-  echo 10 | $PWD/$filename
+  printf "%s\n" "$line"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile failed." \
+            "\n============================="
+    continue
+  fi
+  echo -e "10\n" | $PWD/$filename
   echo -e "expected 1010\n"
-  echo 10000 | $PWD/$filename
+  echo -e "10000\n" | $PWD/$filename
   echo -e "expected 10011100010000\n"
-  echo 70000 65535 | $PWD/$filename
+  echo -e "70000\n65535\n" | $PWD/$filename
   echo -e "expected (10001000101110000) 1111111111111111\n"
-  echo 19 | $PWD/$filename
+  echo -e "19\n" | $PWD/$filename
   echo -e "expected 10011\n"
-  echo 0 1 | $PWD/$filename
+  echo -e "0\n1\n" | $PWD/$filename
   echo -e "expected (0) 1\n"
-  echo 2 | $PWD/$filename
+  echo -e "2\n" | $PWD/$filename
   echo -e "expected 10"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-
-echo -e "\n========compile check========" \
+echo -e "\n========Compile Check========" \
         "\nSrc File      : $n_file" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+

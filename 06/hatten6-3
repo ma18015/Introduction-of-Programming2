@@ -1,4 +1,5 @@
 #!/bin/bash
+. ../util.sh --source-only
 
 shpath=$PWD
 cd $(dirname $0)
@@ -46,23 +47,22 @@ do
   printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
-    # fail("${fail[@]}" $cfile)
     fail+=( $cfile )
     echo -e "Compile filed." \
             "\n============================="
     continue
   fi
-  echo So many dynamos! | $PWD/$filename
+  echo -e "So many dynamos!\n" | $PWD/$filename
   echo -e " expected: yes\n"
-  echo Civic? | $PWD/$filename
+  echo -e "Civic?\n" | $PWD/$filename
   echo -e " expected: yes\n"
-  echo "Don't n3od." | $PWD/$filename
+  echo -e "Don't n3od.\n" | $PWD/$filename
   echo -e " expected: yes\n"
-  echo "Eva, can I see bees in a cave?" | $PWD/$filename
+  echo -e "Eva, can I see bees in a cave?\n" | $PWD/$filename
   echo -e " expected: yes\n"
-  echo This is a pen. | $PWD/$filename
+  echo -e "This is a pen.\n" | $PWD/$filename
   echo -e " expected: no\n"
-  echo thirty-year-old | $PWD/$filename
+  echo -e "thirty-year-old\n" | $PWD/$filename
   echo -e " expected: no\n"
   printf "%s\n" "$pad"
 done

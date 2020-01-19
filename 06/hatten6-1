@@ -36,6 +36,7 @@ echo -e "\n==========Test case==========" \
         "\nI think, that is 2 pen." \
         "\ninput" \
         "\nthirty-year-old" \
+        "\n (no character)" \
         "\n============================="
 
 fail=()
@@ -52,18 +53,20 @@ do
             "\n============================="
     continue
   fi
-  echo This is a pen. | $PWD/$filename
+  echo -e "This is a pen.\n" | $PWD/$filename
   echo -e " expected: 4\n"
-  echo Is this a pen? | $PWD/$filename
+  echo -e "Is this a pen?\n" | $PWD/$filename
   echo -e " expected: 4\n"
-  echo "How are you? --- I'm fine, thank you." | $PWD/$filename
+  echo -e "How are you? --- I'm fine, thank you.\n" | $PWD/$filename
   echo -e " expected: 8\n"
-  echo I think, that is 2 pen. | $PWD/$filename
+  echo -e "I think, that is 2 pen.\n" | $PWD/$filename
   echo -e " expected: (6 if number is counted) 5\n"
-  echo input | $PWD/$filename
+  echo -e "input\n" | $PWD/$filename
   echo -e " expected: 1\n"
-  echo thirty-year-old | $PWD/$filename
+  echo -e "thirty-year-old\n" | $PWD/$filename
   echo -e " expected: 3\n"
+  echo -e " \n" | $PWD/$filename
+  echo -e " expected: 0\n"
   printf "%s\n" "$pad"
 done
 

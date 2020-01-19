@@ -47,7 +47,7 @@ do
   if [ $? -ne 0 ]; then
     # fail("${fail[@]}" $cfile)
     fail+=( $cfile )
-    echo -e "Compile filed." \
+    echo -e "Compile failed." \
             "\n============================="
     continue
   fi
@@ -57,7 +57,7 @@ do
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-echo -e "\n========Compile check========" \
+echo -e "\n========Compile Check========" \
         "\nSrc File      : $n_file" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \

@@ -1,5 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+. ../util.sh --source-only
 
+shpath=$PWD
 cd $(dirname $0)
 path=${1:-../src}
 cd $path
@@ -12,24 +14,54 @@ if [ $n_file = 0 ]; then
   exit 1
 fi
 
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Input 5 people scores. Print average score." \
+        "\n  Then print scores over ave and scores under ave separately.\n" \
+        "\n* Use array to store input scores." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 10 80 38 60 90"\
+        "\n 10 0 5 3 9"\
+        "\n 200 90 85 83 89 90"\
+        "\n 60 59 61 0 0"\
+        "\n============================="
+
+fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
-  echo 10 80 38 60 90 | $PWD/$filename
+  printf "%s\n" "$line"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile filed." \
+            "\n============================="
+    continue
+  fi
+  echo -e "10\n80\n38\n60\n90\n" | $PWD/$filename
   echo -e "expected\n" \
           "Ave       : 55.6\n" \
           "Over  Ave : 80 60 90\n" \
           "Under Ave : 10 38\n"
-  echo 10 0 5 3 9 | $PWD/$filename
+  echo -e "10\n0\n5\n3\n9\n" | $PWD/$filename
   echo -e "expected\n" \
           "Ave       : 5.4\n" \
           "Over  Ave : 10 9\n" \
           "Under Ave : 0 5 3\n"
-  echo 200 90 85 83 89 90 | $PWD/$filename
+  echo -e "200\n90\n85\n83\n89\n90\n" | $PWD/$filename
   echo -e "expected\n" \
           "(if 200 included)\n" \
           "Ave       : 109.4\n" \
@@ -40,18 +72,20 @@ do
           "Ave       : 87.4\n" \
           "Over  Ave : 90 89 90\n" \
           "Under Ave : 85 83\n"
-  echo 60 59 61 0 0 | $PWD/$filename
+  echo -e "60\n59\n61\n0\n0\n" | $PWD/$filename
   echo -e "expected\n" \
           "Ave       : 36.0\n" \
           "Over  Ave : 60 59 61\n" \
           "Under Ave : 0 0"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-
-echo -e "\n========compile check========" \
+echo -e "\n========Compile Check========" \
         "\nSrc File      : $n_efile" \
         "\nExecute File  : $n_file" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+

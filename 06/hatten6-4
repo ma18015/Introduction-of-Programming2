@@ -46,21 +46,20 @@ do
   printf "%s\n" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
   if [ $? -ne 0 ]; then
-    # fail("${fail[@]}" $cfile)
     fail+=( $cfile )
     echo -e "Compile filed." \
             "\n============================="
     continue
   fi
-  echo def abcdefg | $PWD/$filename
+  echo -e "def\nabcdefg\n" | $PWD/$filename
   echo -e " expected: yes\n"
-  echo cef abcefg | $PWD/$filename
+  echo -e "cef\nabcefg\n" | $PWD/$filename
   echo -e " expected: yes\n"
-  echo cef abcdefg | $PWD/$filename
+  echo -e "cef\nabcdefg\n" | $PWD/$filename
   echo -e " expected: no\n"
-  echo abcefg acef | $PWD/$filename
+  echo -e "abcefg\nacef\n" | $PWD/$filename
   echo -e " expected: no\n"
-  echo zvn abcdefg | $PWD/$filename
+  echo -e "zvn\nabcdefg\n" | $PWD/$filename
   echo -e " expected: no\n"
   printf "%s\n" "$pad"
 done

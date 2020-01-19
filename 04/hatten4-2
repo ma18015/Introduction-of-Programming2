@@ -1,5 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+. ../util.sh --source-only
 
+shpath=$PWD
 cd $(dirname $0)
 path=${1:-../src}
 cd $path
@@ -12,28 +14,59 @@ if [ $n_file = 0 ]; then
   exit 1
 fi
 
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Input two 2*2 matrices, multiply them and print the result.\n" \
+        "\n* 3 nested for loop is recommended." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 1 2 3 4 1 1 1 1"\
+        "\n 2 -1 1 3 1 2 3 4"\
+        "\n -5 -4 4 13 0 5 -3 9"\
+        "\n -5 -4 4 13 0 0 0 0"\
+        "\n============================="
+
+fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
-  echo 1 2 3 4 1 1 1 1 | $PWD/$filename      # => 3 3 7 7
+  printf "%s\n" "$line"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile failed." \
+            "\n============================="
+    continue
+  fi
+  echo -e "1\n2\n3\n4\n1\n1\n1\n1\n" | $PWD/$filename
   echo -e "expected 3 3 7 7\n"
-  echo 2 -1 1 3 1 2 3 4 | $PWD/$filename     # => -1 0 10 14
+  echo -e "2\n-1\n1\n3\n1\n2\n3\n4\n" | $PWD/$filename
   echo -e "expected -1 0 10 14\n"
-  echo -5 -4 4 13 0 5 -3 9 | $PWD/$filename  # => 12 -61 -39 137
+  echo -e "-5\n-4\n4\n13\n0\n5\n-3\n9\n" | $PWD/$filename
   echo -e "expected 12 -61 -39 137\n"
-  echo -5 -4 4 13 0 0 0 0 | $PWD/$filename
+  echo -e "-5\n-4\n4\n13\n0\n0\n0\n0\n" | $PWD/$filename
   echo -e "expected 0 0 0 0"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-
-echo -e "\n========compile check========" \
+echo -e "\n========Compile Check========" \
         "\nSrc File      : $n_file" \
         "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+
