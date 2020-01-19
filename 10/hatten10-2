@@ -59,6 +59,11 @@ echo -e "\n==========Test case=========="\
         "\n Ta 91 102"\
         "\n Miro 0 50"\
         "\n Ja 19 100"\
+        "\n ------------------------"\
+        "\n 3"\
+        "\n Tag 90 100"\
+        "\n Mirog 80 110"\
+        "\n Jag 20 170"\
         "\n============================="
 
 fail=()
@@ -123,6 +128,15 @@ do
           "\n  Ta       91        102     193" \
           "\n  Ja       19        100     119" \
           "\n  Miro      0         50      50"
+  echo -e "3\n"\
+          "Tag\n90\n100\n"\
+          "Mirog\n80\n110\n"\
+          "Jag\n20\n170\n" | $PWD/$filename
+  echo -e " expected: " \
+          "\n  Name   Math    English   Total" \
+          "\n  Tag      90        100     190"\
+          "\n  Mirog    80        110     190"\
+          "\n  Jag      20        170     190"
   printf "%s\n" "$pad"
 done
 

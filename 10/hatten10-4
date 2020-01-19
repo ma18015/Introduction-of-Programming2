@@ -1,4 +1,5 @@
 #!/bin/bash
+. ../util.sh --source-only
 
 shpath=$PWD
 cd $(dirname $0)
@@ -54,11 +55,11 @@ do
             "\n============================="
     continue
   fi
-  echo 7 | $PWD/$filename
+  echo -e "7\n" | $PWD/$filename
   echo -e " expected: July\n"
-  echo 3 | $PWD/$filename
+  echo -e "3\n" | $PWD/$filename
   echo -e " expected: March\n"
-  echo 11 | $PWD/$filename
+  echo -e "11\n" | $PWD/$filename
   echo -e " expected: November\n"
   echo -e "0\n1\n" | $PWD/$filename
   echo -e " expected: (invalid input 0) Jan\n"
