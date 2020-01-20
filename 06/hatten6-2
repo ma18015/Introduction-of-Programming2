@@ -51,17 +51,17 @@ do
             "\n============================="
     continue
   fi
-  echo "Unidentified Flying Object" | $PWD/$filename
+  echo -e "Unidentified Flying Object\n" | $PWD/$filename
   echo -e " expected: UFO\n"
-  echo "ABCD" | $PWD/$filename
+  echo -e "ABCD\n" | $PWD/$filename
   echo -e " expected: ABCD\n"
-  echo "AB-CD!" | $PWD/$filename
+  echo -e "AB-CD!\n" | $PWD/$filename
   echo -e " expected: ABCD\n"
-  echo "AB,CD." | $PWD/$filename
+  echo -e "AB,CD.\n" | $PWD/$filename
   echo -e " expected: ABCD\n"
-  echo "AB1CD?" | $PWD/$filename
+  echo -e "AB1CD?\n" | $PWD/$filename
   echo -e " expected: ABCD\n"
-  echo "\nAB 3 -  CD? ? " | $PWD/$filename
+  echo -e "AB 3 -  CD? ? \n" | $PWD/$filename
   echo -e " expected: ABCD\n"
   printf "%s\n" "$pad"
 done
