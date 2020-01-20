@@ -1,5 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+. ../util.sh --source-only
 
+shpath=$PWD
 cd $(dirname $0)
 path=${1:-../src}
 cd $path
@@ -12,38 +14,65 @@ if [ $n_file = 0 ]; then
   exit 1
 fi
 
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
 echo -e "\n=============================" \
         "\n* lcm function. like\n" \
-        "\n  int lcm(int n, int m) {...}\n" \
+        "\n  int lcm(int n, int m) {...}" \
+        "\n============================="
 
+echo -e "\n==========Test case==========" \
+        "\n " \
+        "\n " \
+        "\n " \
+        "\n============================="
+
+
+fail=()
 for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
-  echo -e "\n============================="
+  printf "\n%s\n" "$pad"
   echo "$filename"
-  echo "----------------------------"
-  gcc "$PWD/$cfile" -o "$PWD/$filename"
-  echo 12 18 | $PWD/$filename
+  printf "%s\n" "$line"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile failed." \
+            "\n============================="
+    continue
+  fi
+  echo -e "12\n18\n" | $PWD/$filename
   echo -e "expected lcm: 36\n"
-  echo 3 2 | $PWD/$filename
+  echo -e "3\n2\n" | $PWD/$filename
   echo -e "expected lcm: 6\n"
-  echo 8 19 | $PWD/$filename
+  echo -e "8\n19\n" | $PWD/$filename
   echo -e "expected lcm: 152\n"
-  echo 9 9 | $PWD/$filename
+  echo -e "9\n9\n" | $PWD/$filename
   echo -e "expected lcm: 9\n"
-  echo 10 45 | $PWD/$filename
+  echo -e "10\n45\n" | $PWD/$filename
   echo -e "expected lcm: 90\n"
-  echo 0 10 45 | $PWD/$filename
+  echo -e "0\n10\n45\n10\n" | $PWD/$filename
   echo -e "expected lcm: (0 is invalid) 90\n"
-  echo 5 -2 45 | $PWD/$filename
+  echo -e "5\n-2\n45\n5\n" | $PWD/$filename
   echo -e "expected lcm: (minus is invalid) 45"
-  echo -e "============================="
+  printf "%s\n" "$pad"
 done
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
-
-echo -e "\n========compile check========" \
-        "\nSrc File      : $n_efile" \
-        "\nExecute File  : $n_file" \
+echo -e "\n========Compile Check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
         "\nCompile Error : $(($n_file-$n_efile))" \
         "\n============================="
+
+print_files fail[@] "Failed files"
+
