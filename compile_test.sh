@@ -28,7 +28,7 @@ for cfile in $tfile*.c
 do
   filename=`basename $cfile .c`
   echo $filename
-  gcc "$PWD/$cfile" -o "$PWD/$filename" -Wall 2>> $shpath/gerr.log
+  gcc "$PWD/$cfile" -o "$PWD/$filename" -Wall -lm 2>> $shpath/gerr.log
   if [ $? -ne 0 ]; then
     # fail("${fail[@]}" $cfile)
     fail+=( $cfile )
