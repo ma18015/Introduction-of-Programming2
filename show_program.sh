@@ -34,7 +34,7 @@ rm $efile
 com_file=`ls $tfile*.c`
 # download required files
 wget http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.sep.tgz -P $PWD/
-tar zxvf mt19937ar.sep.tgz
+tar zxf mt19937ar.sep.tgz
 
 fail=()
 for cfile in $tfile*.c
