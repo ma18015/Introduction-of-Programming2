@@ -27,6 +27,15 @@ if [ $n_efile -gt 0 ]; then
   rm $efile
 fi
 
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+rm $efile
+# c files which will be compiled
+com_file=`ls $tfile*.c`
+# download required files
+wget http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.sep.tgz -P $PWD/
+tar zxvf mt19937ar.sep.tgz
+
 fail=()
 for cfile in $tfile*.c
 do
@@ -34,7 +43,7 @@ do
   printf "\n%s\n" "$pad"
   echo $filename
   printf "%s\n" "$line"
-  gcc "$PWD/$cfile" -o "$PWD/$filename" -Wall 2>> $shpath/gerr.log
+  gcc -lm "$PWD/$cfile" "mt19937ar.c" -o "$PWD/$filename" -Wall 2>> $shpath/gerr.log
   if [ $? -ne 0 ]; then
     fail+=( $cfile )
     echo -e "Compile filed." \
@@ -44,6 +53,13 @@ do
   cat $PWD/$cfile
   printf "%s\n" "$pad"
 done
+
+rm $PWD/mt19937ar.c\
+   $PWD/mt19937ar.h\
+   $PWD/mt19937ar.out\
+   $PWD/mt19937ar.sep.tgz\
+   $PWD/mtTest.c\
+   $PWD/readme-mt.txt
 
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n========Compile check========" \
