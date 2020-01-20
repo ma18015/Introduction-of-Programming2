@@ -23,14 +23,19 @@ fi
 efile=`ls $tfile* | grep -Ev "*.c"`
 rm $efile
 
+com_file=`ls $tfile*.c`
+
+# download required files
+wget http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.sep.tgz -P $PWD/
+tar zxvf mt19937ar.sep.tgz
+
 fail=()
-for cfile in $tfile*.c
+for cfile in $com_file
 do
   filename=`basename $cfile .c`
   echo $filename
-  gcc "$PWD/$cfile" -o "$PWD/$filename" -Wall -lm 2>> $shpath/gerr.log
+  gcc -lm "$PWD/$cfile" "mt19937ar.c" -o "$PWD/$filename" -Wall 2>> $shpath/gerr.log
   if [ $? -ne 0 ]; then
-    # fail("${fail[@]}" $cfile)
     fail+=( $cfile )
     echo -e "Compile filed." \
             "\n============================="
@@ -38,7 +43,15 @@ do
   fi
 done
 
-# n_efile=`find . -not -name "*.c" -type f | wc -l`
+
+rm $PWD/mt19937ar.c\
+   $PWD/mt19937ar.h\
+   $PWD/mt19937ar.out\
+   $PWD/mt19937ar.sep.tgz\
+   $PWD/mtTest.c\
+   $PWD/readme-mt.txt
+
+
 n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
 echo -e "\n============================" \
         "\nSrc File      : $n_efile" \
