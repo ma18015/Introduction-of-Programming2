@@ -37,6 +37,7 @@ echo -e "\n==========Test case==========" \
         "\ninput" \
         "\nthirty-year-old" \
         "\n (no character)" \
+        "\nth r y- e r-old" \
         "\n============================="
 
 fail=()
@@ -67,6 +68,8 @@ do
   echo -e " expected: 3\n"
   echo -e " \n" | $PWD/$filename
   echo -e " expected: 0\n"
+  echo -e "th r y- e r-old\n" | $PWD/$filename
+  echo -e " expected: 6\n"
   printf "%s\n" "$pad"
 done
 
