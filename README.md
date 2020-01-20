@@ -31,6 +31,9 @@
   gnum=your_group_number pass=your_password id=your_student_id ./download.sh
   ```
 
+**yamlファイルかなんかにテストケース書いて，Pythonから呼ぶ形にすればよかったなぁ...**\
+**何回も同じようなコード書いててちょっとやり方がスマートじゃない...**
+
 ---
 
 I didn't make some test scripts. \
@@ -57,4 +60,7 @@ Only for show\_program.sh you can set path by arg2.
 * download.sh \
   To download your group src you just run this script like \
   `gnum=your_group_number pass=your_password id=your_student_id ./download.sh`
+
+**Now I realize that it's much better to write test case in yaml file or json or sth, then read from python code and exec test case.**\
+**This test code is stupud repetitive code..."**
 
