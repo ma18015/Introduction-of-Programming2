@@ -1,0 +1,85 @@
+#!/bin/bash
+. ../util.sh --source-only
+
+shpath=$PWD
+cd $(dirname $0)
+path=${1:-../src}
+cd $path
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Estimating Pi using the Monte Carlo Method.\n" \
+        "\n* Input how many points are used for the Monte Carlo Method." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 10" \
+        "\n 100" \
+        "\n 100000" \
+        "\n============================="
+
+# c files which will be compiled
+com_files=`ls $tfile*.c`
+wget http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.sep.tgz -P $PWD/
+tar zxf mt19937ar.sep.tgz
+
+fail=()
+for cfile in $com_files
+do
+  filename=`basename $cfile .c`
+  printf "\n%s\n" "$pad"
+  echo "$filename"
+  printf "%s\n" "$line"
+  gcc -lm "$PWD/$cfile" "mt19937ar.c" -o "$PWD/$filename" -Wall 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile failed." \
+            "\n============================="
+    continue
+  fi
+  echo 10 | $PWD/$filename
+  echo -e " Expected: About 2.800000"\
+        "\n           Program is used random number, so output isn't same depending on when you exec.\n"
+  echo 100 | $PWD/$filename
+  echo -e " Expected: About 3.080000"\
+        "\n           Program is used random number, so output isn't same depending on when you exec.\n"
+  echo 100000 | $PWD/$filename
+  echo -e " Expected: About 3.133960"\
+        "\n           Program is used random number, so output isn't same depending on when you exec.\n"
+  printf "%s\n" "$pad"
+done
+
+rm $PWD/mt19937ar.c\
+   $PWD/mt19937ar.h\
+   $PWD/mt19937ar.out\
+   $PWD/mt19937ar.sep.tgz\
+   $PWD/mtTest.c\
+   $PWD/readme-mt.txt
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+echo -e "\n========Compile Check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="
+
+print_files fail[@] "Failed files"
+
+

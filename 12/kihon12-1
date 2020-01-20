@@ -1,0 +1,69 @@
+#!/bin/bash
+. ../util.sh --source-only
+
+shpath=$PWD
+cd $(dirname $0)
+path=${1:-../src}
+cd $path
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n============================="\
+        "\n* Print calendar."\
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n 2020 1"\
+        "\n 2020 2"\
+        "\n 1900 2"\
+        "\n============================="
+
+fail=()
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  printf "\n%s\n" "$pad"
+  echo "$filename"
+  printf "%s\n" "$line"
+  gcc -lm "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile failed." \
+            "\n============================="
+    continue
+  fi
+  echo -e "2020\n2\n" | $PWD/$filename
+  echo -e "2020\n1\n" | $PWD/$filename
+  echo -e "1900\n2\n" | $PWD/$filename
+  printf "%s\n" "$pad"
+done
+
+# NULL check
+src=($PWD/$tfile*.c)
+null_check src[@]
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+echo -e "\n========Compile check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="
+
+print_files fail[@] "Failed files"
+

@@ -1,0 +1,74 @@
+#!/bin/bash
+. ../util.sh --source-only
+
+shpath=$PWD
+cd $(dirname $0)
+path=${1:-../src}
+cd $path
+
+tfile=`basename $0`
+n_file=`ls -1 $tfile*.c 2> /dev/null | wc -l`
+
+if [ $n_file = 0 ]; then
+  echo "There is no file starting with $tfile"
+  exit 1
+fi
+
+# rm only exec files
+efile=`ls $tfile* | grep -Ev "*.c"`
+n_efile=`ls -1 $tfile* 2>/dev/null | grep -Ev "*.c" | wc -l`
+if [ $n_efile -gt 0 ]; then
+  echo "-- removed --------------"
+  echo $efile
+  echo "-------------------------"
+  rm $efile
+fi
+
+echo -e "\n=============================" \
+        "\n* Cal sum with two decimal numbers whose digit is under 30." \
+        "\n============================="
+
+echo -e "\n==========Test case==========" \
+        "\n Case 1"\
+        "\n 111222333444555666777888999"\
+        "\n 123456789012345678901234567890\n"\
+        "\n Case 2"\
+        "\n 123456789012345678901234567890"\
+        "\n 999999999999999999999999999999\n"\
+        "\n Case 3"\
+        "\n 833833103710821011912447925559"\
+        "\n 459139547910547612696631054949"\
+        "\n============================="
+
+fail=()
+for cfile in $tfile*.c
+do
+  filename=`basename $cfile .c`
+  printf "\n%s\n" "$pad"
+  echo "$filename"
+  printf "%s\n" "$line"
+  gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+  if [ $? -ne 0 ]; then
+    fail+=( $cfile )
+    echo -e "Compile failed." \
+            "\n============================="
+    continue
+  fi
+  echo -e "111222333444555666777888999\n123456789012345678901234567890\n" | $PWD/$filename
+  echo -e " Expected: 123568011345790234568012456889\n"
+  echo -e "123456789012345678901234567890\n999999999999999999999999999999\n" | $PWD/$filename
+  echo -e " Expected: 1123456789012345678901234567889\n"
+  echo -e "833833103710821011912447925559\n459139547910547612696631054949\n" | $PWD/$filename
+  echo -e " Expected: 1292972651621368624609078980508\n"
+  printf "%s\n" "$pad"
+done
+
+n_efile=`ls $tfile* | grep -Ev "*.c" | wc -l`
+echo -e "\n========Compile Check========" \
+        "\nSrc File      : $n_file" \
+        "\nExecute File  : $n_efile" \
+        "\nCompile Error : $(($n_file-$n_efile))" \
+        "\n============================="
+
+print_files fail[@] "Failed files"
+
