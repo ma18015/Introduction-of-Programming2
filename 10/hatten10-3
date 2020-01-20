@@ -46,8 +46,13 @@ do
   filename=`basename $cfile .c`
   printf "\n%s\n" "$pad"
   echo "$filename"
-  printf "%s\n" "$line"
+  printf "%s" "$line"
   gcc "$PWD/$cfile" -o "$PWD/$filename" 2>> $shpath/err.log
+
+  pad_print "calloc"
+  grep "calloc" "$PWD/$cfile"
+  printf "%s\n" "$pad"
+
   if [ $? -ne 0 ]; then
     fail+=( $cfile )
     echo -e "Compile filed." \
